@@ -10,6 +10,7 @@ import {
   Clock,
   Star,
   ArrowRight,
+  Sparkles,
 } from "lucide-react";
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -17,6 +18,7 @@ import "aos/dist/aos.css";
 import ProductCard from "@/components/shared/ProductCard";
 import UMKMCard from "@/components/shared/UMKMCard";
 import CountdownTimer from "@/components/shared/CountdownTimer";
+import { showSecondBitIntroModal } from "@/utils/showSecondBitIntroModal";
 import {
   categories,
   banners,
@@ -38,8 +40,176 @@ export default function Home() {
 
   return (
     <main>
+      {/* ===== Platform Tagline & Welcome Card ===== */}
+      <section style={{ padding: "16px 0 0" }}>
+        <div className="container">
+          <div
+            data-aos="fade-down"
+            style={{
+              background: "linear-gradient(135deg, rgba(238, 77, 45, 0.07) 0%, rgba(38, 170, 108, 0.07) 50%, rgba(99, 102, 241, 0.07) 100%)",
+              borderRadius: "var(--radius-xl)",
+              border: "1px solid var(--border)",
+              padding: "20px 24px",
+              display: "flex",
+              flexDirection: "column",
+              gap: 12,
+              position: "relative",
+              overflow: "hidden",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                flexWrap: "wrap",
+                gap: 10,
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                <span
+                  style={{
+                    backgroundColor: "var(--primary)",
+                    color: "#fff",
+                    fontSize: 11,
+                    fontWeight: 700,
+                    padding: "3px 10px",
+                    borderRadius: "var(--radius-full)",
+                    letterSpacing: "0.5px",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  🌱 Food Rescue & Hidden Gem
+                </span>
+                <span style={{ fontSize: 13, color: "var(--muted)", fontWeight: 500 }}>
+                  Sekitar UNESA Ketintang, Surabaya
+                </span>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => showSecondBitIntroModal(true)}
+                className="btn btn-sm btn-outline"
+                style={{
+                  gap: 6,
+                  borderRadius: "var(--radius-full)",
+                  fontSize: 12,
+                  fontWeight: 600,
+                  backgroundColor: "var(--surface)",
+                  cursor: "pointer",
+                }}
+              >
+                <Sparkles size={14} style={{ color: "var(--primary)" }} />
+                <span>Apa itu SecondBit? (Info Platform)</span>
+              </button>
+            </div>
+
+            <div>
+              <h1
+                style={{
+                  fontSize: "clamp(20px, 3.2vw, 26px)",
+                  fontWeight: 800,
+                  lineHeight: 1.25,
+                  marginBottom: 6,
+                  color: "var(--foreground)",
+                }}
+              >
+                Selamatkan Makanan Lezat, Hemat Budget, Dukung UMKM Lokal!
+              </h1>
+              <p
+                style={{
+                  fontSize: 14,
+                  color: "var(--foreground-secondary)",
+                  lineHeight: 1.5,
+                  maxWidth: 780,
+                }}
+              >
+                Platform pelopor penyelamatan surplus makanan dan direktori kuliner hidden gem di sekitar kampus. Dapatkan diskon hingga 70% untuk makanan fresh berkualitas sebelum toko tutup, nikmati promo Flash Deal harian, dan bantu kurangi food waste!
+              </p>
+            </div>
+
+            {/* Quick value badges */}
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: 8,
+                paddingTop: 2,
+              }}
+            >
+              <Link
+                to="/explore?type=surplus"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  fontSize: 12,
+                  fontWeight: 600,
+                  color: "var(--success)",
+                  background: "var(--success-light)",
+                  padding: "4px 12px",
+                  borderRadius: "var(--radius-full)",
+                  textDecoration: "none",
+                }}
+              >
+                <span>🌿</span> Surplus Rescue s/d 70%
+              </Link>
+              <Link
+                to="/flash-deals"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  fontSize: 12,
+                  fontWeight: 600,
+                  color: "var(--primary)",
+                  background: "var(--primary-light)",
+                  padding: "4px 12px",
+                  borderRadius: "var(--radius-full)",
+                  textDecoration: "none",
+                }}
+              >
+                <span>⚡</span> Flash Deal Tiap Hari
+              </Link>
+              <Link
+                to="/hidden-gem"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  fontSize: 12,
+                  fontWeight: 600,
+                  color: "#6366F1",
+                  background: "rgba(99, 102, 241, 0.1)",
+                  padding: "4px 12px",
+                  borderRadius: "var(--radius-full)",
+                  textDecoration: "none",
+                }}
+              >
+                <span>💎</span> Direktori Hidden Gem
+              </Link>
+              <div
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 6,
+                  fontSize: 12,
+                  fontWeight: 600,
+                  color: "#D97706",
+                  background: "rgba(245, 158, 11, 0.1)",
+                  padding: "4px 12px",
+                  borderRadius: "var(--radius-full)",
+                }}
+              >
+                <span>📱</span> Ambil Pesanan via QRIS
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ===== Hero Banner Carousel ===== */}
-      <section style={{ padding: "20px 0 0" }}>
+      <section style={{ padding: "16px 0 0" }}>
         <div className="container">
           <div
             className="scroll-x"

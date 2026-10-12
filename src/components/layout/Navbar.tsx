@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { useTheme } from "@/hooks/useTheme";
 import logoImg from "@/assets/images/logo.jpg";
+import { showSecondBitIntroModal } from "@/utils/showSecondBitIntroModal";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -25,6 +26,14 @@ export default function Navbar() {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Show intro modal on first visit
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      showSecondBitIntroModal(false);
+    }, 700);
+    return () => clearTimeout(timer);
   }, []);
 
   const [auth, setAuth] = useState<{ role?: string; name?: string; isLoggedIn?: boolean } | null>(null);
@@ -71,21 +80,77 @@ export default function Navbar() {
           transition: "all var(--transition-normal)",
         }}
       >
-        {/* Top Bar */}
+        {/* Top Bar with Tagline & Intro Trigger */}
         <div
           style={{
-            backgroundColor: "var(--primary)",
+            background: "linear-gradient(90deg, #EE4D2D 0%, #D73211 100%)",
             color: "#fff",
             fontSize: 12,
             padding: "6px 0",
-            textAlign: "center",
             fontWeight: 500,
           }}
         >
-          <div className="container" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
-            <MapPin size={13} />
-            <span>Sekitar UNESA Ketintang, Surabaya</span>
-            <ChevronDown size={13} />
+          <div
+            className="container"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+              gap: 8,
+            }}
+          >
+            {/* Tagline */}
+            <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+              <span
+                style={{
+                  backgroundColor: "rgba(255,255,255,0.22)",
+                  padding: "2px 8px",
+                  borderRadius: "var(--radius-full)",
+                  fontSize: 11,
+                  fontWeight: 700,
+                  letterSpacing: "0.4px",
+                }}
+              >
+                🌱 FOOD RESCUE & UMKM
+              </span>
+              <span style={{ fontSize: 12, fontWeight: 500, opacity: 0.95 }}>
+                Selamatkan Makanan Lezat, Hemat Budget, Dukung UMKM Lokal!
+              </span>
+            </div>
+
+            {/* Right section: Location + Apa itu SecondBit Button */}
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 4, opacity: 0.9 }}>
+                <MapPin size={13} />
+                <span>UNESA Ketintang, Surabaya</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => showSecondBitIntroModal(true)}
+                style={{
+                  backgroundColor: "#ffffff",
+                  color: "var(--primary)",
+                  border: "none",
+                  borderRadius: "var(--radius-full)",
+                  padding: "3px 12px",
+                  fontSize: 11,
+                  fontWeight: 700,
+                  cursor: "pointer",
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 4,
+                  boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
+                  transition: "transform 150ms ease",
+                }}
+                onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.04)")}
+                onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
+                title="Pelajari apa itu SecondBit"
+              >
+                <span>✨</span>
+                <span>Apa itu SecondBit?</span>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -99,25 +164,55 @@ export default function Navbar() {
               padding: "12px 0",
             }}
           >
-            {/* Logo */}
+            {/* Logo + Tagline */}
             <Link
               to="/"
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: 8,
+                gap: 10,
                 flexShrink: 0,
+                textDecoration: "none",
               }}
             >
               <img
                 src={logoImg}
                 alt="SecondBit"
                 style={{
-                  height: 36,
+                  height: 38,
                   width: "auto",
                   objectFit: "contain",
                 }}
               />
+              <div
+                style={{
+                  display: "none",
+                  flexDirection: "column",
+                  lineHeight: 1.2,
+                }}
+                className="logo-sub-tagline"
+              >
+                <span
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 800,
+                    color: "var(--primary)",
+                    letterSpacing: "0.5px",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  Food Rescue & UMKM
+                </span>
+                <span
+                  style={{
+                    fontSize: 11,
+                    color: "var(--muted)",
+                    fontWeight: 500,
+                  }}
+                >
+                  Ketintang • Surabaya
+                </span>
+              </div>
             </Link>
 
             {/* Search Bar - Desktop */}
@@ -313,6 +408,31 @@ export default function Navbar() {
                   {link.label}
                 </Link>
               ))}
+              <button
+                type="button"
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  showSecondBitIntroModal(true);
+                }}
+                style={{
+                  padding: "12px 16px",
+                  fontSize: 14,
+                  fontWeight: 600,
+                  color: "#EE4D2D",
+                  backgroundColor: "var(--primary-light)",
+                  borderRadius: "var(--radius-md)",
+                  border: "none",
+                  textAlign: "left",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  marginTop: 4,
+                }}
+              >
+                <span>✨</span>
+                <span>Apa itu SecondBit? (Info Platform)</span>
+              </button>
               <hr
                 style={{
                   border: "none",
@@ -355,6 +475,9 @@ export default function Navbar() {
       </header>
 
       <style>{`
+        @media (min-width: 640px) {
+          .logo-sub-tagline { display: flex !important; }
+        }
         @media (min-width: 768px) {
           .search-desktop { display: flex !important; }
           .mobile-only { display: none !important; }
