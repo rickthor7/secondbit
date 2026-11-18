@@ -104,3 +104,18 @@ export interface Banner {
 }
 
 export type UserRole = "buyer" | "seller" | "admin";
+
+// Analytics Types
+export interface DailySalesPoint {
+  date: string;
+  label: string;
+  revenue: number;
+  orders: number;
+  portions: number;
+  surplus: number;
+}
+
+export interface HourlyTrafficPoint {
+  hour: string;
+  orders: number;
+}

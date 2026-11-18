@@ -12,6 +12,7 @@ import {
   Leaf,
 } from "lucide-react";
 import { formatPrice } from "@/data/mockData";
+import AISalesInsight from "@/components/seller/AISalesInsight";
 
 export default function SellerDashboard() {
   return (
@@ -57,6 +58,8 @@ export default function SellerDashboard() {
       <div className="container" style={{ marginTop: -24, paddingBottom: 40 }}>
         {/* Stats Cards */}
         <div
+          id="seller-overview"
+          className="dash-section"
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(2, 1fr)",
@@ -91,6 +94,11 @@ export default function SellerDashboard() {
           ))}
         </div>
 
+        {/* AI Sales Analysis */}
+        <div id="seller-ai" className="dash-section">
+          <AISalesInsight umkmId="u1" />
+        </div>
+
         {/* Quick Actions */}
         <div
           style={{
@@ -105,7 +113,7 @@ export default function SellerDashboard() {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(4, 1fr)",
+              gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
               gap: 12,
             }}
           >
@@ -138,6 +146,8 @@ export default function SellerDashboard() {
 
         {/* Pending Orders */}
         <div
+          id="seller-orders"
+          className="dash-section"
           style={{
             backgroundColor: "var(--background)",
             borderRadius: "var(--radius-xl)",
@@ -209,6 +219,8 @@ export default function SellerDashboard() {
 
         {/* Balance */}
         <div
+          id="seller-balance"
+          className="dash-section"
           style={{
             background: "linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)",
             borderRadius: "var(--radius-xl)",

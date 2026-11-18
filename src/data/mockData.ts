@@ -1,4 +1,4 @@
-import { Product, UMKM, Category, Banner, Review, Order } from "@/types";
+import { Product, UMKM, Category, Banner, Review, Order, DailySalesPoint, HourlyTrafficPoint } from "@/types";
 
 // ===== Categories =====
 export const categories: Category[] = [
@@ -310,6 +310,52 @@ export const orders: Order[] = [
     totalPrice: 28000, status: "completed", paymentMethod: "QRIS",
     pickupTime: "Selesai", createdAt: "2026-09-21T12:00:00Z", umkmName: "Bakso Pak Darmo",
   },
+];
+
+// ===== Seller Analytics (Warung Bu Siti) =====
+// Data 7 hari terakhir untuk mesin analisis penjualan di dashboard UMKM.
+// Urutan: paling lama → hari ini.
+
+const DAY_LABELS = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
+
+function buildRecentDates(count: number): { date: string; label: string }[] {
+  const today = new Date();
+  return Array.from({ length: count }, (_, i) => {
+    const d = new Date(today);
+    d.setDate(today.getDate() - (count - 1 - i));
+    return {
+      date: d.toISOString().slice(0, 10),
+      label: i === count - 1 ? "Hari ini" : DAY_LABELS[d.getDay()],
+    };
+  });
+}
+
+const SELLER_DAILY_RAW = [
+  { revenue: 310000, orders: 6, portions: 24, surplus: 7 },
+  { revenue: 365000, orders: 9, portions: 28, surplus: 6 },
+  { revenue: 298000, orders: 7, portions: 22, surplus: 8 },
+  { revenue: 412000, orders: 10, portions: 30, surplus: 6 },
+  { revenue: 385000, orders: 9, portions: 27, surplus: 5 },
+  { revenue: 402000, orders: 9, portions: 28, surplus: 6 },
+  { revenue: 450000, orders: 8, portions: 32, surplus: 5 },
+];
+
+export const sellerWeeklySales: DailySalesPoint[] = buildRecentDates(
+  SELLER_DAILY_RAW.length
+).map((day, i) => ({ ...day, ...SELLER_DAILY_RAW[i] }));
+
+export const sellerHourlyTraffic: HourlyTrafficPoint[] = [
+  { hour: "07", orders: 1 },
+  { hour: "08", orders: 3 },
+  { hour: "09", orders: 4 },
+  { hour: "10", orders: 7 },
+  { hour: "11", orders: 12 },
+  { hour: "12", orders: 13 },
+  { hour: "13", orders: 8 },
+  { hour: "14", orders: 4 },
+  { hour: "15", orders: 3 },
+  { hour: "16", orders: 2 },
+  { hour: "17", orders: 1 },
 ];
 
 // ===== Helper Functions =====

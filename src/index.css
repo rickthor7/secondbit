@@ -510,6 +510,20 @@ button {
   100% { background-position: 200% 0; }
 }
 
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spin {
+  animation: spin 900ms linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .spin {
+    animation-duration: 2.4s;
+  }
+}
+
 /* ===== Bottom Nav (Mobile) ===== */
 
 .bottom-nav {
@@ -533,6 +547,11 @@ button {
   
   body {
     padding-bottom: 70px;
+  }
+
+  /* Dashboard punya navigasi bawah sendiri */
+  body:has(.dash-shell) {
+    padding-bottom: 0;
   }
 }
 
@@ -560,6 +579,111 @@ button {
 .bottom-nav-item svg {
   width: 22px;
   height: 22px;
+}
+
+/* ===== Dashboard Shell (per role) ===== */
+
+.dash-shell {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--surface);
+}
+
+.dash-sidebar {
+  display: none;
+  flex-direction: column;
+  width: 264px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.dash-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.dash-navbar {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+}
+
+.dash-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.dash-bottom-nav {
+  display: flex;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: var(--z-fixed);
+  padding: 6px 0 calc(6px + env(safe-area-inset-bottom, 0px));
+  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.dash-overlay {
+  position: fixed;
+  inset: 0;
+  border: none;
+  padding: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: calc(var(--z-modal) - 1);
+}
+
+.dash-section {
+  scroll-margin-top: 96px;
+}
+
+@media (min-width: 1024px) {
+  .dash-sidebar {
+    display: flex;
+  }
+
+  .dash-bottom-nav {
+    display: none;
+  }
+
+  .dash-menu-btn {
+    display: none !important;
+  }
+}
+
+@media (max-width: 1023px) {
+  .dash-sidebar[data-open="true"] {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: var(--z-modal);
+    box-shadow: var(--shadow-xl);
+  }
+
+  .dash-sidebar[data-open="true"] .dash-sidebar-close {
+    display: inline-flex !important;
+  }
+
+  .dash-content {
+    padding-bottom: 76px;
+  }
+}
+
+@media (max-width: 640px) {
+  .dash-quick-action {
+    padding: 8px !important;
+  }
+
+  .dash-quick-action span {
+    display: none;
+  }
 }
 
 /* ===== Responsive Grid ===== */
