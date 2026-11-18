@@ -21,6 +21,8 @@ export default function BuyerDashboard() {
     <main style={{ minHeight: "80vh", backgroundColor: "var(--surface)" }}>
       {/* Profile Header */}
       <div
+        id="buyer-overview"
+        className="dash-section"
         style={{
           background: "linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%)",
           padding: "32px 0 48px",
@@ -106,6 +108,8 @@ export default function BuyerDashboard() {
 
         {/* Saving Stats */}
         <div
+          id="buyer-impact"
+          className="dash-section"
           style={{
             background: "linear-gradient(135deg, #E8F8F0 0%, #D4EDDA 100%)",
             borderRadius: "var(--radius-xl)",
@@ -136,7 +140,7 @@ export default function BuyerDashboard() {
         </div>
 
         {/* Active Orders */}
-        <div style={{ marginBottom: 32 }}>
+        <div id="buyer-orders" className="dash-section" style={{ marginBottom: 32 }}>
           <div className="section-header">
             <h2 className="section-title" style={{ fontSize: 17 }}>
               <Clock size={18} style={{ color: "var(--primary)", verticalAlign: "middle", marginRight: 6 }} />

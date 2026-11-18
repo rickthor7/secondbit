@@ -1,8 +1,10 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { ThemeProvider } from "@/hooks/useTheme";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import BottomNav from "@/components/layout/BottomNav";
+import DashboardLayout from "@/components/layout/DashboardLayout";
+import { isDashboardPath } from "@/config/dashboardConfig";
 
 // Pages
 import Home from "@/pages/Home";
@@ -17,46 +19,99 @@ import BuyerDashboard from "@/pages/buyer/Dashboard";
 import SellerDashboard from "@/pages/seller/Dashboard";
 import AdminDashboard from "@/pages/admin/Dashboard";
 
+function AppShell() {
+  const location = useLocation();
+  const inDashboard = isDashboardPath(location.pathname);
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "100vh",
+      }}
+    >
+      {!inDashboard && <Navbar />}
+
+      <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column" }}>
+        <Routes>
+          {/* Public */}
+          <Route path="/" element={<Home />} />
+          <Route path="/explore" element={<Explore />} />
+          <Route path="/flash-deals" element={<FlashDeals />} />
+          <Route path="/hidden-gem" element={<HiddenGem />} />
+          <Route path="/product/:slug" element={<ProductDetail />} />
+          <Route path="/umkm/:slug" element={<UMKMDetail />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+
+          {/* Buyer */}
+          <Route
+            path="/buyer"
+            element={
+              <DashboardLayout role="buyer">
+                <BuyerDashboard />
+              </DashboardLayout>
+            }
+          />
+          <Route
+            path="/buyer/dashboard"
+            element={
+              <DashboardLayout role="buyer">
+                <BuyerDashboard />
+              </DashboardLayout>
+            }
+          />
+
+          {/* Seller */}
+          <Route
+            path="/seller"
+            element={
+              <DashboardLayout role="seller">
+                <SellerDashboard />
+              </DashboardLayout>
+            }
+          />
+          <Route
+            path="/seller/dashboard"
+            element={
+              <DashboardLayout role="seller">
+                <SellerDashboard />
+              </DashboardLayout>
+            }
+          />
+
+          {/* Admin */}
+          <Route
+            path="/admin"
+            element={
+              <DashboardLayout role="admin">
+                <AdminDashboard />
+              </DashboardLayout>
+            }
+          />
+          <Route
+            path="/admin/dashboard"
+            element={
+              <DashboardLayout role="admin">
+                <AdminDashboard />
+              </DashboardLayout>
+            }
+          />
+        </Routes>
+      </div>
+
+      {!inDashboard && <Footer />}
+      {!inDashboard && <BottomNav />}
+    </div>
+  );
+}
+
 export default function App() {
   return (
     <ThemeProvider>
       <BrowserRouter>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            minHeight: "100vh",
-          }}
-        >
-          <Navbar />
-          <div style={{ flex: 1 }}>
-            <Routes>
-              {/* Public */}
-              <Route path="/" element={<Home />} />
-              <Route path="/explore" element={<Explore />} />
-              <Route path="/flash-deals" element={<FlashDeals />} />
-              <Route path="/hidden-gem" element={<HiddenGem />} />
-              <Route path="/product/:slug" element={<ProductDetail />} />
-              <Route path="/umkm/:slug" element={<UMKMDetail />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-
-              {/* Buyer */}
-              <Route path="/buyer" element={<BuyerDashboard />} />
-              <Route path="/buyer/dashboard" element={<BuyerDashboard />} />
-
-              {/* Seller */}
-              <Route path="/seller" element={<SellerDashboard />} />
-              <Route path="/seller/dashboard" element={<SellerDashboard />} />
-
-              {/* Admin */}
-              <Route path="/admin" element={<AdminDashboard />} />
-              <Route path="/admin/dashboard" element={<AdminDashboard />} />
-            </Routes>
-          </div>
-          <Footer />
-          <BottomNav />
-        </div>
+        <AppShell />
       </BrowserRouter>
     </ThemeProvider>
   );

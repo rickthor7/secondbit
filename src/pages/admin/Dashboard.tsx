@@ -27,7 +27,7 @@ export default function AdminDashboard() {
       >
         <div className="container">
           <h1 style={{ fontSize: 22, fontWeight: 700, marginBottom: 4 }}>
-            Admin Dashboard
+            Ringkasan Platform
           </h1>
           <p style={{ fontSize: 13, opacity: 0.7 }}>
             SecondBit Platform Overview — {new Date().toLocaleDateString("id-ID", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
@@ -38,6 +38,8 @@ export default function AdminDashboard() {
       <div className="container" style={{ marginTop: -24, paddingBottom: 40 }}>
         {/* KPI Cards */}
         <div
+          id="admin-overview"
+          className="dash-section"
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
@@ -103,6 +105,8 @@ export default function AdminDashboard() {
 
         {/* Management Sections */}
         <div
+          id="admin-activity"
+          className="dash-section"
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
@@ -159,6 +163,8 @@ export default function AdminDashboard() {
 
           {/* Quick Management */}
           <div
+            id="admin-management"
+            className="dash-section"
             style={{
               backgroundColor: "var(--background)",
               borderRadius: "var(--radius-xl)",
