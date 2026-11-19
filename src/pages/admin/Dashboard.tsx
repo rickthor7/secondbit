@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import {
   Users,
   Store,
@@ -98,8 +99,13 @@ export default function AdminDashboard() {
               Segera review untuk menghindari delay
             </div>
           </div>
-          <span className="section-link" style={{ marginLeft: "auto", cursor: "pointer", flexShrink: 0 }}>
-            Review <ChevronRight size={16} />
+          <span className="section-link" style={{ marginLeft: "auto", flexShrink: 0 }}>
+            <Link
+              to="/admin/umkm"
+              style={{ display: "inline-flex", alignItems: "center", gap: 2, color: "inherit" }}
+            >
+              Review <ChevronRight size={16} />
+            </Link>
           </span>
         </div>
 
@@ -127,6 +133,20 @@ export default function AdminDashboard() {
               <Activity size={16} style={{ color: "var(--primary)", verticalAlign: "middle", marginRight: 6 }} />
               Aktivitas Terbaru
             </h3>
+            <Link
+              to="/admin/activity"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 2,
+                fontSize: 12,
+                fontWeight: 700,
+                color: "var(--primary)",
+                marginBottom: 10,
+              }}
+            >
+              Lihat semua aktivitas <ChevronRight size={14} />
+            </Link>
             {[
               { action: "UMKM baru mendaftar", detail: "Nasi Goreng Pak Min", time: "5 menit lalu", color: "var(--info)" },
               { action: "Transaksi selesai", detail: "Order SB-127 — Rp45.000", time: "12 menit lalu", color: "var(--success)" },
@@ -178,28 +198,27 @@ export default function AdminDashboard() {
             </h3>
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               {[
-                { icon: Users, label: "Kelola Pembeli", count: 450 },
-                { icon: Store, label: "Kelola UMKM", count: 20 },
-                { icon: Package, label: "Kelola Produk", count: 156 },
-                { icon: ShoppingBag, label: "Kelola Transaksi", count: 1240 },
-                { icon: DollarSign, label: "Settlement", count: 15 },
-                { icon: Star, label: "Rating & Review", count: 892 },
-                { icon: BarChart3, label: "Laporan & Analitik", count: null },
-              ].map(({ icon: Icon, label, count }) => (
-                <button
+                { icon: Users, label: "Kelola Pembeli", count: 450, path: "/admin/users" },
+                { icon: Store, label: "Kelola UMKM", count: 20, path: "/admin/umkm" },
+                { icon: Package, label: "Kelola Produk", count: 156, path: "/admin/products" },
+                { icon: ShoppingBag, label: "Kelola Transaksi", count: 1240, path: "/admin/transactions" },
+                { icon: DollarSign, label: "Settlement", count: 15, path: "/admin/settlements" },
+                { icon: Star, label: "Rating & Review", count: 892, path: "/admin/reviews" },
+                { icon: BarChart3, label: "Laporan & Analitik", count: null, path: "/admin/reports" },
+              ].map(({ icon: Icon, label, count, path }) => (
+                <Link
                   key={label}
+                  to={path}
                   className="card"
                   style={{
                     padding: "12px 16px",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "space-between",
-                    border: "none",
                     width: "100%",
-                    textAlign: "left",
-                    cursor: "pointer",
                     boxShadow: "none",
                     backgroundColor: "var(--surface)",
+                    color: "inherit",
                   }}
                 >
                   <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -212,7 +231,7 @@ export default function AdminDashboard() {
                     )}
                     <ChevronRight size={16} style={{ color: "var(--muted-light)" }} />
                   </div>
-                </button>
+                </Link>
               ))}
             </div>
           </div>
