@@ -30,6 +30,7 @@ import {
 
 interface AISalesInsightProps {
   umkmId: string;
+  defaultExpanded?: boolean;
 }
 
 const TONES: Record<InsightTone, { color: string; background: string }> = {
@@ -63,10 +64,10 @@ function formatRelativeTime(date: Date, now: number): string {
   return `${Math.floor(minutes / 60)} jam lalu`;
 }
 
-export default function AISalesInsight({ umkmId }: AISalesInsightProps) {
+export default function AISalesInsight({ umkmId, defaultExpanded = false }: AISalesInsightProps) {
   const [analysis, setAnalysis] = useState<SalesAnalysis | null>(null);
   const [loading, setLoading] = useState(true);
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(defaultExpanded);
   const [now, setNow] = useState(() => Date.now());
   const timerRef = useRef<number | null>(null);
 

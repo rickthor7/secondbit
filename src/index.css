@@ -642,6 +642,20 @@ button {
   scroll-margin-top: 96px;
 }
 
+.dash-stat-value {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .dash-stat-value {
+    font-size: 18px;
+  }
+}
+
 @media (min-width: 1024px) {
   .dash-sidebar {
     display: flex;
