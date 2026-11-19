@@ -10,7 +10,6 @@ import {
   Leaf,
   ChevronDown,
   ChevronUp,
-  BarChart3,
   ShieldCheck,
   type LucideIcon,
 } from "lucide-react";
@@ -315,70 +314,6 @@ export default function AISalesInsight({ umkmId, defaultExpanded = false }: AISa
               >
                 <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                   {analysis.insights.slice(3).map(renderInsight)}
-                </div>
-
-                {/* Tren omzet 7 hari */}
-                <div>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      marginBottom: 10,
-                    }}
-                  >
-                    <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)" }}>
-                      <BarChart3 size={14} style={{ verticalAlign: "middle", marginRight: 6, color: "var(--muted)" }} />
-                      Tren Omzet 7 Hari
-                    </div>
-                    <div style={{ fontSize: 11, color: "var(--muted)" }}>
-                      Terbaik: {analysis.bestDay.label} · {formatPrice(analysis.bestDay.revenue)}
-                    </div>
-                  </div>
-
-                  <div style={{ display: "flex", alignItems: "flex-end", gap: 8, height: 120 }}>
-                    {sellerWeeklySales.map((day) => {
-                      const maxRevenue = Math.max(...sellerWeeklySales.map((d) => d.revenue));
-                      const ratio = maxRevenue === 0 ? 0 : day.revenue / maxRevenue;
-                      const isToday = day.date === analysis.today.date;
-
-                      return (
-                        <div
-                          key={day.date}
-                          style={{
-                            flex: 1,
-                            height: "100%",
-                            display: "flex",
-                            flexDirection: "column",
-                            justifyContent: "flex-end",
-                            alignItems: "center",
-                            gap: 6,
-                          }}
-                        >
-                          <div
-                            title={`${day.label}: ${formatPrice(day.revenue)}`}
-                            style={{
-                              width: "100%",
-                              height: `calc((100% - 20px) * ${Math.max(ratio, 0.06)})`,
-                              borderRadius: "6px 6px 2px 2px",
-                              backgroundColor: isToday ? "var(--primary)" : "var(--primary-light)",
-                              transition: "height var(--transition-slow)",
-                            }}
-                          />
-                          <span
-                            style={{
-                              fontSize: 10,
-                              color: isToday ? "var(--primary)" : "var(--muted)",
-                              fontWeight: isToday ? 700 : 500,
-                              whiteSpace: "nowrap",
-                            }}
-                          >
-                            {day.label}
-                          </span>
-                        </div>
-                      );
-                    })}
-                  </div>
                 </div>
 
                 <div

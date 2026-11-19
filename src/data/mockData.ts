@@ -386,9 +386,43 @@ const SELLER_DAILY_RAW = [
   { revenue: 450000, orders: 8, portions: 32, surplus: 5 },
 ];
 
-export const sellerWeeklySales: DailySalesPoint[] = buildRecentDates(
-  SELLER_DAILY_RAW.length
-).map((day, i) => ({ ...day, ...SELLER_DAILY_RAW[i] }));
+// Riwayat 30 hari untuk grafik tren omzet yang interaktif.
+// Tujuh data terakhir sengaja sama persis dengan SELLER_DAILY_RAW
+// agar angka analisis, prediksi, dan dashboard tetap konsisten.
+const SELLER_HISTORY_RAW = [
+  { revenue: 256000, orders: 6, portions: 20, surplus: 9 },
+  { revenue: 284000, orders: 6, portions: 22, surplus: 8 },
+  { revenue: 312000, orders: 7, portions: 24, surplus: 8 },
+  { revenue: 298000, orders: 7, portions: 23, surplus: 7 },
+  { revenue: 336000, orders: 8, portions: 26, surplus: 7 },
+  { revenue: 352000, orders: 8, portions: 27, surplus: 6 },
+  { revenue: 274000, orders: 6, portions: 21, surplus: 9 },
+  { revenue: 288000, orders: 7, portions: 22, surplus: 8 },
+  { revenue: 304000, orders: 7, portions: 23, surplus: 8 },
+  { revenue: 326000, orders: 8, portions: 25, surplus: 7 },
+  { revenue: 318000, orders: 7, portions: 24, surplus: 7 },
+  { revenue: 368000, orders: 9, portions: 28, surplus: 6 },
+  { revenue: 384000, orders: 9, portions: 29, surplus: 6 },
+  { revenue: 296000, orders: 7, portions: 23, surplus: 8 },
+  { revenue: 322000, orders: 8, portions: 25, surplus: 7 },
+  { revenue: 340000, orders: 8, portions: 26, surplus: 7 },
+  { revenue: 358000, orders: 9, portions: 27, surplus: 6 },
+  { revenue: 346000, orders: 8, portions: 26, surplus: 6 },
+  { revenue: 390000, orders: 10, portions: 30, surplus: 5 },
+  { revenue: 404000, orders: 10, portions: 31, surplus: 5 },
+  { revenue: 318000, orders: 7, portions: 24, surplus: 7 },
+  { revenue: 336000, orders: 8, portions: 26, surplus: 6 },
+  { revenue: 354000, orders: 9, portions: 27, surplus: 6 },
+  ...SELLER_DAILY_RAW,
+];
+
+export const sellerSalesHistory: DailySalesPoint[] = buildRecentDates(
+  SELLER_HISTORY_RAW.length
+).map((day, i) => ({ ...day, ...SELLER_HISTORY_RAW[i] }));
+
+export const sellerWeeklySales: DailySalesPoint[] = sellerSalesHistory.slice(
+  -SELLER_DAILY_RAW.length
+);
 
 export const sellerHourlyTraffic: HourlyTrafficPoint[] = [
   { hour: "07", orders: 1 },

@@ -5,7 +5,12 @@ import StatCard from "@/components/dashboard/StatCard";
 import Panel from "@/components/dashboard/Panel";
 import DataTable, { type DataColumn } from "@/components/dashboard/DataTable";
 import AISalesInsight from "@/components/seller/AISalesInsight";
-import { sellerWeeklySales, formatPrice } from "@/data/mockData";
+import RevenueTrendChart from "@/components/seller/RevenueTrendChart";
+import {
+  sellerWeeklySales,
+  sellerSalesHistory,
+  formatPrice,
+} from "@/data/mockData";
 import type { DailySalesPoint } from "@/types";
 
 type SalesRow = DailySalesPoint & { id: string };
@@ -57,7 +62,7 @@ export default function SellerAnalytics() {
         <PageHeader
           kicker="Portal Mitra"
           title="Analisis Penjualan"
-          description="Ringkasan performa toko, prediksi omzet, dan rekomendasi stok dari mesin analisis SecondBit."
+          description="Ringkasan performa toko, tren omzet interaktif, prediksi omzet, dan rekomendasi stok dari mesin analisis SecondBit."
           actions={
             <Link to="/seller/orders" className="btn btn-outline">
               Pesanan Masuk
@@ -77,6 +82,10 @@ export default function SellerAnalytics() {
           <StatCard label="Rata-rata / Hari" value={formatPrice(average)} icon={TrendingUp} tone="primary" />
           <StatCard label="Total Pesanan" value={String(orderCount)} icon={ShoppingBag} tone="info" />
           <StatCard label="Porsi Terjual" value={String(portions)} icon={Package} tone="warning" />
+        </div>
+
+        <div style={{ marginBottom: 20 }}>
+          <RevenueTrendChart data={sellerSalesHistory} />
         </div>
 
         <div style={{ marginBottom: 20 }}>

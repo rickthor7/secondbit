@@ -11,8 +11,9 @@ import {
   ChevronRight,
   Leaf,
 } from "lucide-react";
-import { formatPrice, sellerOrders } from "@/data/mockData";
+import { formatPrice, sellerOrders, sellerSalesHistory } from "@/data/mockData";
 import AISalesInsight from "@/components/seller/AISalesInsight";
+import RevenueTrendChart from "@/components/seller/RevenueTrendChart";
 import StatusPill from "@/components/dashboard/StatusPill";
 
 export default function SellerDashboard() {
@@ -97,6 +98,11 @@ export default function SellerDashboard() {
               <div style={{ fontSize: 11, color, fontWeight: 500 }}>{change}</div>
             </div>
           ))}
+        </div>
+
+        {/* Tren omzet interaktif */}
+        <div id="seller-trend" className="dash-section" style={{ marginBottom: 24 }}>
+          <RevenueTrendChart data={sellerSalesHistory} />
         </div>
 
         {/* AI Sales Analysis */}
