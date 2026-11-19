@@ -1,13 +1,19 @@
 import {
   Activity,
+  BarChart3,
   ClipboardList,
   Gem,
+  Gift,
+  Heart,
   LayoutDashboard,
   Leaf,
-  Settings,
+  Package,
+  QrCode,
   ShoppingBag,
   Sparkles,
+  Star,
   Store,
+  Users,
   Wallet,
   Zap,
   type LucideIcon,
@@ -20,7 +26,7 @@ export interface DashboardNavItem {
   id: string;
   label: string;
   icon: LucideIcon;
-  /** "#section-id" untuk scroll di halaman, "/path" untuk pindah halaman */
+  /** Selalu berupa path halaman, contoh "/buyer/orders" */
   target: string;
 }
 
@@ -98,11 +104,20 @@ export const dashboardConfig: Record<DashboardRole, DashboardRoleConfig> = {
     },
     nav: [
       {
-        label: "Ringkasan",
+        label: "Akun Saya",
         items: [
-          { id: "buyer-overview", label: "Ringkasan Akun", icon: LayoutDashboard, target: "#buyer-overview" },
-          { id: "buyer-impact", label: "Impact Kamu", icon: Leaf, target: "#buyer-impact" },
-          { id: "buyer-orders", label: "Pesanan Aktif", icon: ClipboardList, target: "#buyer-orders" },
+          { id: "buyer-overview", label: "Ringkasan Akun", icon: LayoutDashboard, target: "/buyer" },
+          { id: "buyer-orders", label: "Pesanan Saya", icon: ClipboardList, target: "/buyer/orders" },
+          { id: "buyer-pickup", label: "Ambil Pesanan", icon: QrCode, target: "/buyer/pickup" },
+          { id: "buyer-impact", label: "Impact Kamu", icon: Leaf, target: "/buyer/impact" },
+          { id: "buyer-favorites", label: "Produk Favorit", icon: Heart, target: "/buyer/favorites" },
+        ],
+      },
+      {
+        label: "Promo & Ulasan",
+        items: [
+          { id: "buyer-vouchers", label: "Voucher Saya", icon: Gift, target: "/buyer/vouchers" },
+          { id: "buyer-reviews", label: "Ulasan Saya", icon: Star, target: "/buyer/reviews" },
         ],
       },
       {
@@ -152,14 +167,22 @@ export const dashboardConfig: Record<DashboardRole, DashboardRoleConfig> = {
       {
         label: "Toko Saya",
         items: [
-          { id: "seller-overview", label: "Ringkasan Toko", icon: LayoutDashboard, target: "#seller-overview" },
-          { id: "seller-ai", label: "Analisis Penjualan AI", icon: Sparkles, target: "#seller-ai" },
-          { id: "seller-orders", label: "Pesanan Masuk", icon: ClipboardList, target: "#seller-orders" },
-          { id: "seller-balance", label: "Saldo & Pencairan", icon: Wallet, target: "#seller-balance" },
+          { id: "seller-overview", label: "Ringkasan Toko", icon: LayoutDashboard, target: "/seller" },
+          { id: "seller-analytics", label: "Analisis Penjualan", icon: Sparkles, target: "/seller/analytics" },
+          { id: "seller-orders", label: "Pesanan Masuk", icon: ClipboardList, target: "/seller/orders" },
         ],
       },
       {
-        label: "Kelola",
+        label: "Kelola Toko",
+        items: [
+          { id: "seller-products", label: "Produk Saya", icon: Package, target: "/seller/products" },
+          { id: "seller-surplus", label: "Surplus Rescue", icon: Leaf, target: "/seller/surplus" },
+          { id: "seller-scanner", label: "Scanner QR", icon: QrCode, target: "/seller/scanner" },
+          { id: "seller-balance", label: "Saldo & Pencairan", icon: Wallet, target: "/seller/balance" },
+        ],
+      },
+      {
+        label: "Jelajahi",
         items: [
           { id: "store", label: "Halaman Toko", icon: Store, target: "/umkm/warung-bu-siti" },
           { id: "marketplace", label: "Marketplace", icon: ShoppingBag, target: "/" },
@@ -204,9 +227,25 @@ export const dashboardConfig: Record<DashboardRole, DashboardRoleConfig> = {
       {
         label: "Platform",
         items: [
-          { id: "admin-overview", label: "Ringkasan Platform", icon: LayoutDashboard, target: "#admin-overview" },
-          { id: "admin-activity", label: "Aktivitas Terbaru", icon: Activity, target: "#admin-activity" },
-          { id: "admin-management", label: "Manajemen", icon: Settings, target: "#admin-management" },
+          { id: "admin-overview", label: "Ringkasan Platform", icon: LayoutDashboard, target: "/admin" },
+          { id: "admin-activity", label: "Aktivitas", icon: Activity, target: "/admin/activity" },
+          { id: "admin-reports", label: "Laporan & Analitik", icon: BarChart3, target: "/admin/reports" },
+        ],
+      },
+      {
+        label: "Manajemen",
+        items: [
+          { id: "admin-users", label: "Kelola Pembeli", icon: Users, target: "/admin/users" },
+          { id: "admin-umkm", label: "Kelola UMKM", icon: Store, target: "/admin/umkm" },
+          { id: "admin-products", label: "Kelola Produk", icon: Package, target: "/admin/products" },
+          { id: "admin-transactions", label: "Kelola Transaksi", icon: ShoppingBag, target: "/admin/transactions" },
+        ],
+      },
+      {
+        label: "Keuangan & Review",
+        items: [
+          { id: "admin-settlements", label: "Settlement", icon: Wallet, target: "/admin/settlements" },
+          { id: "admin-reviews", label: "Rating & Review", icon: Star, target: "/admin/reviews" },
         ],
       },
       {

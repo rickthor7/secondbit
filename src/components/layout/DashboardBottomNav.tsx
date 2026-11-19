@@ -1,19 +1,17 @@
+import { Link, useLocation } from "react-router-dom";
 import { LayoutGrid } from "lucide-react";
-import type { DashboardNavItem, DashboardRoleConfig } from "@/config/dashboardConfig";
+import type { DashboardRoleConfig } from "@/config/dashboardConfig";
 
 interface DashboardBottomNavProps {
   config: DashboardRoleConfig;
-  active: string;
-  onSelect: (item: DashboardNavItem) => void;
   onOpenMenu: () => void;
 }
 
 export default function DashboardBottomNav({
   config,
-  active,
-  onSelect,
   onOpenMenu,
 }: DashboardBottomNavProps) {
+  const location = useLocation();
   const items = config.nav[0].items.slice(0, 3);
 
   return (
@@ -27,19 +25,18 @@ export default function DashboardBottomNav({
     >
       {items.map((item) => {
         const Icon = item.icon;
-        const isActive = active === item.id;
+        const isActive = location.pathname === item.target;
 
         return (
-          <button
+          <Link
             key={item.id}
-            type="button"
-            onClick={() => onSelect(item)}
+            to={item.target}
             className={`bottom-nav-item ${isActive ? "active" : ""}`}
-            aria-current={isActive ? "true" : undefined}
+            aria-current={isActive ? "page" : undefined}
           >
             <Icon size={22} strokeWidth={isActive ? 2.5 : 1.8} />
             <span>{item.label.split(" ")[0]}</span>
-          </button>
+          </Link>
         );
       })}
 
