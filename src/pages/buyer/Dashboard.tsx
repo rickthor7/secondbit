@@ -11,11 +11,25 @@ import {
   TrendingUp,
   Leaf,
 } from "lucide-react";
-import { orders, formatPrice } from "@/data/mockData";
+import { orders, formatPrice, getProductById } from "@/data/mockData";
 
 export default function BuyerDashboard() {
   const activeOrders = orders.filter((o) => o.status !== "completed" && o.status !== "cancelled");
   const completedOrders = orders.filter((o) => o.status === "completed");
+
+  const rescuedPortions = completedOrders.reduce(
+    (sum, order) => sum + order.products.reduce((qty, item) => qty + item.quantity, 0),
+    0
+  );
+
+  const savedAmount = completedOrders.reduce((sum, order) => {
+    const orderSaving = order.products.reduce((total, item) => {
+      const product = getProductById(item.productId);
+      if (!product?.originalPrice) return total;
+      return total + (product.originalPrice - item.price) * item.quantity;
+    }, 0);
+    return sum + orderSaving;
+  }, 0);
 
   return (
     <main style={{ minHeight: "80vh", backgroundColor: "var(--surface)" }}>
@@ -69,10 +83,10 @@ export default function BuyerDashboard() {
           }}
         >
           {[
-            { icon: ShoppingBag, label: "Pesanan", path: "/buyer", color: "var(--primary)" },
-            { icon: Heart, label: "Favorit", path: "/buyer", color: "#E91E63" },
-            { icon: QrCode, label: "Pickup", path: "/buyer", color: "var(--success)" },
-            { icon: Gift, label: "Voucher", path: "/buyer", color: "var(--warning)" },
+            { icon: ShoppingBag, label: "Pesanan", path: "/buyer/orders", color: "var(--primary)" },
+            { icon: Heart, label: "Favorit", path: "/buyer/favorites", color: "#E91E63" },
+            { icon: QrCode, label: "Pickup", path: "/buyer/pickup", color: "var(--success)" },
+            { icon: Gift, label: "Voucher", path: "/buyer/vouchers", color: "var(--warning)" },
           ].map(({ icon: Icon, label, path, color }) => (
             <Link
               key={label}
@@ -128,15 +142,29 @@ export default function BuyerDashboard() {
             </div>
             <div style={{ display: "flex", gap: 20, flexWrap: "wrap" }}>
               <div>
-                <div style={{ fontSize: 20, fontWeight: 800, color: "var(--foreground)" }}>3</div>
+                <div style={{ fontSize: 20, fontWeight: 800, color: "var(--foreground)" }}>{rescuedPortions}</div>
                 <div style={{ fontSize: 11, color: "var(--muted)" }}>Porsi Diselamatkan</div>
               </div>
               <div>
-                <div style={{ fontSize: 20, fontWeight: 800, color: "var(--foreground)" }}>Rp28.000</div>
+                <div style={{ fontSize: 20, fontWeight: 800, color: "var(--foreground)" }}>{formatPrice(savedAmount)}</div>
                 <div style={{ fontSize: 11, color: "var(--muted)" }}>Total Hemat</div>
               </div>
             </div>
           </div>
+          <Link
+            to="/buyer/impact"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 2,
+              fontSize: 12,
+              fontWeight: 700,
+              color: "var(--success)",
+              whiteSpace: "nowrap",
+            }}
+          >
+            Detail <ChevronRight size={15} />
+          </Link>
         </div>
 
         {/* Active Orders */}
@@ -146,6 +174,9 @@ export default function BuyerDashboard() {
               <Clock size={18} style={{ color: "var(--primary)", verticalAlign: "middle", marginRight: 6 }} />
               Pesanan Aktif
             </h2>
+            <Link to="/buyer/orders" className="section-link">
+              Lihat Semua <ChevronRight size={16} />
+            </Link>
           </div>
           {activeOrders.length > 0 ? (
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -175,12 +206,18 @@ export default function BuyerDashboard() {
                     <span
                       className="badge"
                       style={{
-                        backgroundColor: "var(--warning-light)",
-                        color: "#B87C00",
+                        backgroundColor:
+                          order.status === "ready_for_pickup"
+                            ? "var(--success-light)"
+                            : "var(--info-light)",
+                        color:
+                          order.status === "ready_for_pickup"
+                            ? "var(--success)"
+                            : "var(--info)",
                         marginBottom: 6,
                       }}
                     >
-                      Siap Pickup
+                      {order.status === "ready_for_pickup" ? "Siap Pickup" : "Dibayar"}
                     </span>
                     <div className="price-current" style={{ fontSize: 14 }}>
                       {formatPrice(order.totalPrice)}
@@ -201,7 +238,7 @@ export default function BuyerDashboard() {
           {[
             { icon: Zap, label: "Flash Deal Hari Ini", path: "/flash-deals", color: "var(--warning)" },
             { icon: TrendingUp, label: "Best Seller Minggu Ini", path: "/explore?sort=best-seller", color: "var(--primary)" },
-            { icon: Star, label: "Ulasan Saya", path: "/buyer", color: "#FFB300" },
+            { icon: Star, label: "Ulasan Saya", path: "/buyer/reviews", color: "#FFB300" },
           ].map(({ icon: Icon, label, path, color }) => (
             <Link
               key={label}
