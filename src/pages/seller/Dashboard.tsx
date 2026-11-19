@@ -11,10 +11,15 @@ import {
   ChevronRight,
   Leaf,
 } from "lucide-react";
-import { formatPrice } from "@/data/mockData";
+import { formatPrice, sellerOrders } from "@/data/mockData";
 import AISalesInsight from "@/components/seller/AISalesInsight";
+import StatusPill from "@/components/dashboard/StatusPill";
 
 export default function SellerDashboard() {
+  const pendingOrders = sellerOrders.filter(
+    (order) => order.status === "Baru Dibayar" || order.status === "Siap Pickup"
+  );
+
   return (
     <main style={{ minHeight: "80vh", backgroundColor: "var(--surface)" }}>
       {/* Header */}
@@ -118,13 +123,14 @@ export default function SellerDashboard() {
             }}
           >
             {[
-              { icon: Plus, label: "Tambah Produk", color: "var(--primary)" },
-              { icon: Leaf, label: "Tambah Surplus", color: "var(--success)" },
-              { icon: QrCode, label: "Scanner QR", color: "var(--info)" },
-              { icon: BarChart3, label: "Laporan", color: "var(--warning)" },
-            ].map(({ icon: Icon, label, color }) => (
-              <button
+              { icon: Plus, label: "Tambah Produk", path: "/seller/products", color: "var(--primary)" },
+              { icon: Leaf, label: "Tambah Surplus", path: "/seller/surplus", color: "var(--success)" },
+              { icon: QrCode, label: "Scanner QR", path: "/seller/scanner", color: "var(--info)" },
+              { icon: BarChart3, label: "Analisis", path: "/seller/analytics", color: "var(--warning)" },
+            ].map(({ icon: Icon, label, path, color }) => (
+              <Link
                 key={label}
+                to={path}
                 className="btn"
                 style={{
                   flexDirection: "column",
@@ -139,7 +145,7 @@ export default function SellerDashboard() {
               >
                 <Icon size={22} />
                 {label}
-              </button>
+              </Link>
             ))}
           </div>
         </div>
@@ -170,18 +176,14 @@ export default function SellerDashboard() {
                   fontWeight: 700,
                 }}
               >
-                3
+                {pendingOrders.length}
               </span>
             </h3>
-            <span className="section-link" style={{ cursor: "pointer" }}>
+            <Link to="/seller/orders" className="section-link">
               Lihat Semua <ChevronRight size={16} />
-            </span>
+            </Link>
           </div>
-          {[
-            { id: "SB-001", customer: "Ahmad F.", items: "2x Nasi Pecel", total: 30000, status: "Siap Pickup" },
-            { id: "SB-002", customer: "Dina S.", items: "1x Rawon", total: 25000, status: "Baru Dibayar" },
-            { id: "SB-003", customer: "Rizki A.", items: "3x Es Teh Solo", total: 24000, status: "Baru Dibayar" },
-          ].map((order) => (
+          {pendingOrders.map((order) => (
             <div
               key={order.id}
               style={{
@@ -199,16 +201,9 @@ export default function SellerDashboard() {
                 <div style={{ fontSize: 12, color: "var(--muted)" }}>{order.customer}</div>
               </div>
               <div style={{ textAlign: "right" }}>
-                <span
-                  className="badge"
-                  style={{
-                    backgroundColor: order.status === "Siap Pickup" ? "var(--success-light)" : "var(--warning-light)",
-                    color: order.status === "Siap Pickup" ? "var(--success)" : "#B87C00",
-                    marginBottom: 4,
-                  }}
-                >
-                  {order.status}
-                </span>
+                <div style={{ marginBottom: 4 }}>
+                  <StatusPill label={order.status} />
+                </div>
                 <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)" }}>
                   {formatPrice(order.total)}
                 </div>
@@ -230,16 +225,30 @@ export default function SellerDashboard() {
         >
           <div style={{ fontSize: 13, opacity: 0.8, marginBottom: 4 }}>Saldo Tersedia</div>
           <div style={{ fontSize: 28, fontWeight: 800, marginBottom: 12 }}>{formatPrice(1250000)}</div>
-          <button
-            className="btn"
-            style={{
-              backgroundColor: "rgba(255,255,255,0.2)",
-              color: "#fff",
-              border: "1px solid rgba(255,255,255,0.3)",
-            }}
-          >
-            <DollarSign size={16} /> Cairkan Dana
-          </button>
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+            <Link
+              to="/seller/balance"
+              className="btn"
+              style={{
+                backgroundColor: "rgba(255,255,255,0.2)",
+                color: "#fff",
+                border: "1px solid rgba(255,255,255,0.3)",
+              }}
+            >
+              <DollarSign size={16} /> Cairkan Dana
+            </Link>
+            <Link
+              to="/seller/balance"
+              className="btn"
+              style={{
+                backgroundColor: "transparent",
+                color: "#fff",
+                border: "1px solid rgba(255,255,255,0.3)",
+              }}
+            >
+              Riwayat Settlement
+            </Link>
+          </div>
         </div>
       </div>
     </main>
