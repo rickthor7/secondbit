@@ -119,3 +119,56 @@ export interface HourlyTrafficPoint {
   hour: string;
   orders: number;
 }
+
+// Seller Operational Types
+export type SellerOrderStatus = "Baru Dibayar" | "Siap Pickup" | "Selesai" | "Dibatalkan";
+
+export interface SellerOrder {
+  id: string;
+  customer: string;
+  items: string;
+  total: number;
+  status: SellerOrderStatus;
+  createdAt: string;
+  pickupCode: string;
+}
+
+export interface Settlement {
+  id: string;
+  date: string;
+  amount: number;
+  status: "Dicairkan" | "Diproses" | "Menunggu";
+  method: string;
+}
+
+export interface SurplusItem {
+  id: string;
+  name: string;
+  portions: number;
+  originalPrice: number;
+  price: number;
+  pickupWindow: string;
+  status: "Aktif" | "Habis" | "Kedaluwarsa";
+}
+
+// Buyer Types
+export interface Voucher {
+  id: string;
+  title: string;
+  code: string;
+  minSpend: number;
+  discount: number;
+  type: "nominal" | "percent";
+  expiresAt: string;
+}
+
+// Admin Types
+export interface AdminUser {
+  id: string;
+  name: string;
+  email: string;
+  role: UserRole;
+  status: "Aktif" | "Ditangguhkan";
+  joinedAt: string;
+  orders: number;
+}

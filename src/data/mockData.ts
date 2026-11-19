@@ -1,4 +1,18 @@
-import { Product, UMKM, Category, Banner, Review, Order, DailySalesPoint, HourlyTrafficPoint } from "@/types";
+import type {
+  Product,
+  UMKM,
+  Category,
+  Banner,
+  Review,
+  Order,
+  DailySalesPoint,
+  HourlyTrafficPoint,
+  SellerOrder,
+  Settlement,
+  SurplusItem,
+  Voucher,
+  AdminUser,
+} from "@/types";
 
 // ===== Categories =====
 export const categories: Category[] = [
@@ -310,6 +324,38 @@ export const orders: Order[] = [
     totalPrice: 28000, status: "completed", paymentMethod: "QRIS",
     pickupTime: "Selesai", createdAt: "2026-09-21T12:00:00Z", umkmName: "Bakso Pak Darmo",
   },
+  {
+    id: "o3", orderNumber: "SB-20260920-017",
+    products: [
+      { productId: "p2", productName: "Rawon Surabaya", quantity: 1, price: 25000, image: "/images/foods/rawon_surabaya.jpg" },
+    ],
+    totalPrice: 25000, status: "paid", paymentMethod: "QRIS",
+    pickupTime: "11:00 - 12:00", createdAt: "2026-09-20T09:10:00Z", umkmName: "Warung Bu Siti",
+  },
+  {
+    id: "o4", orderNumber: "SB-20260919-088",
+    products: [
+      { productId: "p10", productName: "Klepon & Onde-Onde (5pcs)", quantity: 2, price: 5000, image: "/images/foods/klepon_onde_onde.jpg" },
+    ],
+    totalPrice: 10000, status: "completed", paymentMethod: "GoPay",
+    pickupTime: "Selesai", createdAt: "2026-09-19T07:20:00Z", umkmName: "Jajanan Ibu Lestari",
+  },
+  {
+    id: "o5", orderNumber: "SB-20260918-054",
+    products: [
+      { productId: "p6", productName: "Nasi Ayam Penyet", quantity: 1, price: 12000, image: "/images/foods/ayam_penyet.jpg" },
+    ],
+    totalPrice: 12000, status: "completed", paymentMethod: "QRIS",
+    pickupTime: "Selesai", createdAt: "2026-09-18T11:45:00Z", umkmName: "Ayam Geprek Mas Eko",
+  },
+  {
+    id: "o6", orderNumber: "SB-20260917-009",
+    products: [
+      { productId: "p7", productName: "Paket Bakso + Es Teh", quantity: 1, price: 18000, image: "/images/foods/paket_bakso_esteh.jpg" },
+    ],
+    totalPrice: 18000, status: "cancelled", paymentMethod: "COD",
+    pickupTime: "Dibatalkan", createdAt: "2026-09-17T10:05:00Z", umkmName: "Bakso Pak Darmo",
+  },
 ];
 
 // ===== Seller Analytics (Warung Bu Siti) =====
@@ -356,6 +402,109 @@ export const sellerHourlyTraffic: HourlyTrafficPoint[] = [
   { hour: "15", orders: 3 },
   { hour: "16", orders: 2 },
   { hour: "17", orders: 1 },
+];
+
+// ===== Seller Orders (Warung Bu Siti) =====
+export const sellerOrders: SellerOrder[] = [
+  {
+    id: "SB-001", customer: "Ahmad F.", items: "2x Nasi Pecel Komplit",
+    total: 30000, status: "Siap Pickup", createdAt: "08:10", pickupCode: "PKP-4821",
+  },
+  {
+    id: "SB-002", customer: "Dina S.", items: "1x Rawon Surabaya",
+    total: 25000, status: "Baru Dibayar", createdAt: "08:25", pickupCode: "PKP-4822",
+  },
+  {
+    id: "SB-003", customer: "Rizki A.", items: "3x Nasi Campur Bali",
+    total: 36000, status: "Baru Dibayar", createdAt: "08:42", pickupCode: "PKP-4823",
+  },
+  {
+    id: "SB-004", customer: "Putri N.", items: "2x Nasi Pecel Komplit + 2x Rawon Surabaya",
+    total: 80000, status: "Siap Pickup", createdAt: "09:05", pickupCode: "PKP-4824",
+  },
+  {
+    id: "SB-005", customer: "Bagas P.", items: "1x Nasi Pecel Komplit",
+    total: 15000, status: "Baru Dibayar", createdAt: "09:18", pickupCode: "PKP-4825",
+  },
+  {
+    id: "SB-006", customer: "Sinta M.", items: "2x Rawon Surabaya",
+    total: 50000, status: "Selesai", createdAt: "07:30", pickupCode: "PKP-4826",
+  },
+  {
+    id: "SB-007", customer: "Yoga A.", items: "1x Nasi Campur Bali + 1x Nasi Pecel Komplit",
+    total: 27000, status: "Selesai", createdAt: "07:55", pickupCode: "PKP-4827",
+  },
+  {
+    id: "SB-008", customer: "Nadia K.", items: "1x Nasi Pecel Komplit",
+    total: 15000, status: "Selesai", createdAt: "08:05", pickupCode: "PKP-4828",
+  },
+  {
+    id: "SB-009", customer: "Fajar R.", items: "1x Rawon Surabaya",
+    total: 25000, status: "Dibatalkan", createdAt: "09:32", pickupCode: "PKP-4829",
+  },
+];
+
+// ===== Settlement History =====
+export const settlementHistory: Settlement[] = [
+  { id: "STL-0922", date: "2026-09-22", amount: 1250000, status: "Menunggu", method: "BCA •••• 8821" },
+  { id: "STL-0915", date: "2026-09-15", amount: 2140000, status: "Dicairkan", method: "BCA •••• 8821" },
+  { id: "STL-0908", date: "2026-09-08", amount: 1890000, status: "Dicairkan", method: "BCA •••• 8821" },
+  { id: "STL-0901", date: "2026-09-01", amount: 1640000, status: "Dicairkan", method: "BCA •••• 8821" },
+  { id: "STL-0825", date: "2026-08-25", amount: 1420000, status: "Diproses", method: "BCA •••• 8821" },
+  { id: "STL-0818", date: "2026-08-18", amount: 1725000, status: "Dicairkan", method: "BCA •••• 8821" },
+];
+
+// ===== Seller Surplus =====
+export const sellerSurplus: SurplusItem[] = [
+  {
+    id: "SRP-001", name: "Nasi Pecel Komplit", portions: 12,
+    originalPrice: 15000, price: 9000, pickupWindow: "Hari ini 17:00 - 19:00", status: "Aktif",
+  },
+  {
+    id: "SRP-002", name: "Nasi Campur Bali", portions: 4,
+    originalPrice: 12000, price: 7000, pickupWindow: "Hari ini 16:00 - 18:00", status: "Aktif",
+  },
+  {
+    id: "SRP-003", name: "Rawon Surabaya", portions: 6,
+    originalPrice: 25000, price: 15000, pickupWindow: "Kemarin 17:00 - 19:00", status: "Habis",
+  },
+  {
+    id: "SRP-004", name: "Nasi Pecel Komplit", portions: 3,
+    originalPrice: 15000, price: 9000, pickupWindow: "Kemarin 17:00 - 19:00", status: "Kedaluwarsa",
+  },
+];
+
+// ===== Buyer Vouchers =====
+export const vouchers: Voucher[] = [
+  {
+    id: "v1", title: "Diskon Rp5.000", code: "HEMAT5RB", minSpend: 25000,
+    discount: 5000, type: "nominal", expiresAt: "23 Sep 2026",
+  },
+  {
+    id: "v2", title: "Diskon 20% (maks Rp10.000)", code: "RESCUE20", minSpend: 30000,
+    discount: 20, type: "percent", expiresAt: "30 Sep 2026",
+  },
+  {
+    id: "v3", title: "Gratis Ongkir Pickup", code: "PICKUPFREE", minSpend: 0,
+    discount: 4000, type: "nominal", expiresAt: "21 Sep 2026",
+  },
+  {
+    id: "v4", title: "Diskon Rp10.000", code: "SURPLUS10", minSpend: 50000,
+    discount: 10000, type: "nominal", expiresAt: "15 Okt 2026",
+  },
+];
+
+export const favoriteProductIds = ["p2", "p5", "p10", "p11"];
+
+// ===== Admin Users =====
+export const adminUsers: AdminUser[] = [
+  { id: "buyer1", name: "Ahmad Rizky", email: "ahmad@student.unesa.ac.id", role: "buyer", status: "Aktif", joinedAt: "2026-02-14", orders: 27 },
+  { id: "buyer2", name: "Dina Salsabila", email: "dina@student.unesa.ac.id", role: "buyer", status: "Aktif", joinedAt: "2026-03-02", orders: 18 },
+  { id: "buyer3", name: "Rizki Ardiansyah", email: "rizki@student.unesa.ac.id", role: "buyer", status: "Aktif", joinedAt: "2026-04-21", orders: 12 },
+  { id: "seller1", name: "Siti Aminah", email: "bu.siti@secondbit.id", role: "seller", status: "Aktif", joinedAt: "2025-11-08", orders: 0 },
+  { id: "seller2", name: "Darmo Wijaya", email: "pak.darmo@secondbit.id", role: "seller", status: "Aktif", joinedAt: "2026-01-19", orders: 0 },
+  { id: "buyer4", name: "Putri Nabila", email: "putri@student.unesa.ac.id", role: "buyer", status: "Ditangguhkan", joinedAt: "2026-05-30", orders: 6 },
+  { id: "admin1", name: "Admin SecondBit", email: "admin@secondbit.id", role: "admin", status: "Aktif", joinedAt: "2025-10-01", orders: 0 },
 ];
 
 // ===== Helper Functions =====
