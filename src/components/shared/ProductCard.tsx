@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import { Star, Clock, MapPin } from "lucide-react";
+import { Star, Clock, MapPin, Plus, Flame } from "lucide-react";
+import Swal from "sweetalert2";
 import type { Product } from "@/types";
 import { formatPrice, getDiscountPercent } from "@/data/mockData";
 
@@ -13,6 +14,22 @@ export default function ProductCard({ product, showUMKM = true }: ProductCardPro
   const discountPercent = hasDiscount
     ? getDiscountPercent(product.originalPrice!, product.price)
     : 0;
+
+  const handleQuickAdd = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 2000,
+      icon: "success",
+      title: `${product.name} ditambahkan ke keranjang!`,
+      background: "var(--background)",
+      color: "var(--foreground)",
+    });
+  };
 
   return (
     <Link
@@ -31,6 +48,7 @@ export default function ProductCard({ product, showUMKM = true }: ProductCardPro
           position: "relative",
           paddingTop: "100%",
           overflow: "hidden",
+          backgroundColor: "var(--surface)",
         }}
       >
         <img
@@ -47,7 +65,7 @@ export default function ProductCard({ product, showUMKM = true }: ProductCardPro
             transition: "transform var(--transition-slow)",
           }}
           onMouseOver={(e) =>
-            (e.currentTarget.style.transform = "scale(1.05)")
+            (e.currentTarget.style.transform = "scale(1.06)")
           }
           onMouseOut={(e) =>
             (e.currentTarget.style.transform = "scale(1)")
@@ -63,16 +81,23 @@ export default function ProductCard({ product, showUMKM = true }: ProductCardPro
             display: "flex",
             flexDirection: "column",
             gap: 4,
+            zIndex: 2,
           }}
         >
           {product.type === "flash-deal" && (
-            <span className="badge badge-flash">⚡ Flash Deal</span>
+            <span className="badge badge-flash" style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.15)" }}>
+              ⚡ Flash Deal
+            </span>
           )}
           {product.type === "surplus" && (
-            <span className="badge badge-surplus">🌿 Surplus</span>
+            <span className="badge badge-surplus" style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.15)" }}>
+              🌿 Surplus Rescue
+            </span>
           )}
           {product.isBestSeller && (
-            <span className="badge badge-bestseller">🔥 Best Seller</span>
+            <span className="badge badge-bestseller" style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.15)" }}>
+              🔥 Best Seller
+            </span>
           )}
         </div>
 
@@ -87,15 +112,17 @@ export default function ProductCard({ product, showUMKM = true }: ProductCardPro
               color: "#fff",
               padding: "2px 8px",
               borderRadius: "var(--radius-sm)",
-              fontSize: 12,
-              fontWeight: 700,
+              fontSize: 11,
+              fontWeight: 800,
+              boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
+              zIndex: 2,
             }}
           >
             -{discountPercent}%
           </div>
         )}
 
-        {/* Stock indicator */}
+        {/* Stock indicator badge at bottom of image */}
         {product.stock <= 5 && (
           <div
             style={{
@@ -103,25 +130,31 @@ export default function ProductCard({ product, showUMKM = true }: ProductCardPro
               bottom: 0,
               left: 0,
               right: 0,
-              backgroundColor: "rgba(229, 57, 53, 0.9)",
+              background: "linear-gradient(to top, rgba(220, 53, 69, 0.95), rgba(220, 53, 69, 0.8))",
               color: "#fff",
               textAlign: "center",
-              fontSize: 11,
-              fontWeight: 600,
-              padding: "4px 0",
+              fontSize: 10.5,
+              fontWeight: 700,
+              padding: "4px 8px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 4,
+              letterSpacing: "0.2px",
             }}
           >
-            Sisa {product.stock} porsi!
+            <Flame size={12} />
+            <span>Sisa {product.stock} porsi • Segera amankan!</span>
           </div>
         )}
       </div>
 
       {/* Content */}
-      <div style={{ padding: "12px", flex: 1, display: "flex", flexDirection: "column" }}>
+      <div style={{ padding: "12px 14px", flex: 1, display: "flex", flexDirection: "column" }}>
         <h3
           style={{
             fontSize: 14,
-            fontWeight: 600,
+            fontWeight: 700,
             color: "var(--foreground)",
             marginBottom: 4,
             overflow: "hidden",
@@ -129,7 +162,8 @@ export default function ProductCard({ product, showUMKM = true }: ProductCardPro
             display: "-webkit-box",
             WebkitLineClamp: 2,
             WebkitBoxOrient: "vertical",
-            lineHeight: 1.4,
+            lineHeight: 1.35,
+            minHeight: "2.7em",
           }}
         >
           {product.name}
@@ -141,7 +175,7 @@ export default function ProductCard({ product, showUMKM = true }: ProductCardPro
               display: "flex",
               alignItems: "center",
               gap: 4,
-              marginBottom: 6,
+              marginBottom: 8,
             }}
           >
             <MapPin size={12} style={{ color: "var(--muted)", flexShrink: 0 }} />
@@ -152,6 +186,7 @@ export default function ProductCard({ product, showUMKM = true }: ProductCardPro
                 overflow: "hidden",
                 textOverflow: "ellipsis",
                 whiteSpace: "nowrap",
+                fontWeight: 500,
               }}
             >
               {product.umkmName}
@@ -159,14 +194,36 @@ export default function ProductCard({ product, showUMKM = true }: ProductCardPro
           </div>
         )}
 
-        {/* Price */}
-        <div className="price" style={{ marginBottom: 6 }}>
-          <span className="price-current">{formatPrice(product.price)}</span>
-          {hasDiscount && (
-            <span className="price-original">
-              {formatPrice(product.originalPrice!)}
+        {/* Price & Quick Add */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "flex-end",
+            justifyContent: "space-between",
+            marginTop: "auto",
+            marginBottom: 8,
+          }}
+        >
+          <div className="price" style={{ margin: 0 }}>
+            <span className="price-current" style={{ fontSize: 16 }}>
+              {formatPrice(product.price)}
             </span>
-          )}
+            {hasDiscount && (
+              <span className="price-original" style={{ fontSize: 12 }}>
+                {formatPrice(product.originalPrice!)}
+              </span>
+            )}
+          </div>
+
+          <button
+            type="button"
+            className="quick-add-btn"
+            onClick={handleQuickAdd}
+            title="Tambah ke Keranjang"
+            aria-label="Tambah ke Keranjang"
+          >
+            <Plus size={16} strokeWidth={2.5} />
+          </button>
         </div>
 
         {/* Rating & Sold */}
@@ -174,23 +231,24 @@ export default function ProductCard({ product, showUMKM = true }: ProductCardPro
           style={{
             display: "flex",
             alignItems: "center",
-            gap: 8,
-            marginTop: "auto",
-            fontSize: 12,
+            justifyContent: "space-between",
+            paddingTop: 6,
+            borderTop: "1px solid var(--border-light)",
+            fontSize: 11.5,
             color: "var(--muted)",
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 3 }}>
             <Star
-              size={13}
+              size={12}
               fill="var(--warning)"
               stroke="var(--warning)"
             />
-            <span style={{ fontWeight: 600, color: "var(--foreground)" }}>
+            <span style={{ fontWeight: 700, color: "var(--foreground)" }}>
               {product.rating}
             </span>
+            <span>({product.ratingCount})</span>
           </div>
-          <span>•</span>
           <span>Terjual {product.soldCount > 999 ? `${(product.soldCount / 1000).toFixed(1)}rb` : product.soldCount}</span>
         </div>
 
@@ -201,14 +259,18 @@ export default function ProductCard({ product, showUMKM = true }: ProductCardPro
               display: "flex",
               alignItems: "center",
               gap: 4,
-              marginTop: 8,
+              marginTop: 6,
               fontSize: 11,
               color: "var(--success)",
-              fontWeight: 500,
+              fontWeight: 600,
+              backgroundColor: "var(--success-light)",
+              padding: "2px 6px",
+              borderRadius: "var(--radius-sm)",
+              width: "fit-content",
             }}
           >
-            <Clock size={12} />
-            {product.pickupTime}
+            <Clock size={11} />
+            <span>Pickup: {product.pickupTime}</span>
           </div>
         )}
       </div>

@@ -1,30 +1,43 @@
+import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Star, MapPin, Clock, Award, ChevronLeft } from "lucide-react";
+import { Star, MapPin, Clock, Award, ChevronLeft, Navigation, Leaf, Zap } from "lucide-react";
 import { getUMKMBySlug, getProductsByUMKM } from "@/data/mockData";
 import ProductCard from "@/components/shared/ProductCard";
 
 export default function UMKMDetail() {
   const { slug } = useParams<{ slug: string }>();
   const umkm = getUMKMBySlug(slug || "");
+  const [selectedTab, setSelectedTab] = useState<"all" | "surplus" | "flash" | "normal">("all");
 
   if (!umkm) {
     return (
       <div className="container" style={{ padding: "80px 16px", textAlign: "center" }}>
         <div style={{ fontSize: 48, marginBottom: 12 }}>🏪</div>
-        <h2 style={{ fontSize: 20, fontWeight: 600, marginBottom: 8 }}>UMKM tidak ditemukan</h2>
-        <Link to="/hidden-gem" className="btn btn-primary">Lihat Hidden Gem</Link>
+        <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 8 }}>UMKM tidak ditemukan</h2>
+        <Link to="/hidden-gem" className="btn btn-primary" style={{ borderRadius: "var(--radius-full)" }}>
+          Lihat Hidden Gem
+        </Link>
       </div>
     );
   }
 
-  const products = getProductsByUMKM(umkm.id);
+  const allProducts = getProductsByUMKM(umkm.id);
+  const products = allProducts.filter((p) => {
+    if (selectedTab === "surplus") return p.type === "surplus";
+    if (selectedTab === "flash") return p.type === "flash-deal";
+    if (selectedTab === "normal") return p.type === "normal";
+    return true;
+  });
+
+  const surplusCount = allProducts.filter((p) => p.type === "surplus").length;
+  const flashCount = allProducts.filter((p) => p.type === "flash-deal").length;
 
   return (
     <main style={{ minHeight: "80vh" }}>
       {/* Cover Image */}
       <div
         style={{
-          height: 220,
+          height: 240,
           position: "relative",
           overflow: "hidden",
         }}
@@ -42,7 +55,7 @@ export default function UMKMDetail() {
           style={{
             position: "absolute",
             inset: 0,
-            background: "linear-gradient(to bottom, rgba(0,0,0,0.1), rgba(0,0,0,0.5))",
+            background: "linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.65))",
           }}
         />
         <Link
@@ -53,15 +66,17 @@ export default function UMKMDetail() {
             left: 16,
             display: "flex",
             alignItems: "center",
-            gap: 4,
+            gap: 6,
             color: "#fff",
-            fontSize: 14,
-            backgroundColor: "rgba(0,0,0,0.3)",
-            padding: "6px 12px",
+            fontSize: 13,
+            fontWeight: 600,
+            backgroundColor: "rgba(0,0,0,0.45)",
+            backdropFilter: "blur(6px)",
+            padding: "6px 14px",
             borderRadius: "var(--radius-full)",
           }}
         >
-          <ChevronLeft size={18} /> Kembali
+          <ChevronLeft size={16} /> Kembali ke Direktori
         </Link>
       </div>
 
@@ -70,81 +85,182 @@ export default function UMKMDetail() {
         <div
           style={{
             backgroundColor: "var(--background)",
+            border: "1px solid var(--border)",
             borderRadius: "var(--radius-xl)",
             boxShadow: "var(--shadow-lg)",
             padding: "24px",
-            marginTop: -40,
+            marginTop: -50,
             position: "relative",
             zIndex: 10,
             marginBottom: 32,
           }}
         >
-          <div style={{ display: "flex", gap: 16, alignItems: "flex-start", flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: 20, alignItems: "flex-start", flexWrap: "wrap" }}>
             <img
               src={umkm.image}
               alt={umkm.name}
               style={{
-                width: 80,
-                height: 80,
-                borderRadius: "var(--radius-lg)",
+                width: 90,
+                height: 90,
+                borderRadius: "var(--radius-xl)",
                 objectFit: "cover",
                 border: "3px solid var(--background)",
                 boxShadow: "var(--shadow-md)",
               }}
             />
-            <div style={{ flex: 1, minWidth: 200 }}>
+            <div style={{ flex: 1, minWidth: 220 }}>
               <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 6 }}>
-                <h1 style={{ fontSize: 22, fontWeight: 700 }}>{umkm.name}</h1>
-                {umkm.isMVP && <span className="badge badge-mvp"><Award size={11} /> Mitra MVP</span>}
+                <h1 style={{ fontSize: 24, fontWeight: 800, color: "var(--foreground)" }}>{umkm.name}</h1>
+                {umkm.isMVP && (
+                  <span className="badge badge-mvp" style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.2)" }}>
+                    <Award size={11} /> Mitra Unggulan MVP
+                  </span>
+                )}
                 {umkm.isHiddenGem && (
-                  <span className="badge" style={{ backgroundColor: "var(--info-light)", color: "var(--info)" }}>
+                  <span className="badge" style={{ backgroundColor: "var(--info-light)", color: "var(--info)", fontWeight: 700 }}>
                     💎 Hidden Gem
                   </span>
                 )}
               </div>
 
-              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8, flexWrap: "wrap", fontSize: 13 }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 3 }}>
-                  <Star size={14} fill="var(--warning)" stroke="var(--warning)" />
-                  <span style={{ fontWeight: 600 }}>{umkm.rating}</span>
+              <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10, flexWrap: "wrap", fontSize: 13 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                  <Star size={15} fill="var(--warning)" stroke="var(--warning)" />
+                  <span style={{ fontWeight: 700, color: "var(--foreground)" }}>{umkm.rating}</span>
                   <span style={{ color: "var(--muted)" }}>({umkm.ratingCount} ulasan)</span>
                 </div>
                 <span style={{ color: "var(--border)" }}>|</span>
-                <span style={{ color: "var(--muted)" }}>{umkm.totalSold} terjual</span>
+                <span style={{ color: "var(--muted)", fontWeight: 500 }}>{umkm.totalSold} porsi terjual</span>
                 <span style={{ color: "var(--border)" }}>|</span>
-                <span
-                  style={{
-                    fontWeight: 600,
-                    color: umkm.isOpen ? "var(--success)" : "var(--destructive)",
-                  }}
-                >
-                  {umkm.isOpen ? "🟢 Buka" : "🔴 Tutup"}
-                </span>
+                <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+                  <span className={umkm.isOpen ? "pulse-dot-green" : "pulse-dot-orange"} />
+                  <span
+                    style={{
+                      fontWeight: 700,
+                      color: umkm.isOpen ? "var(--success)" : "var(--destructive)",
+                    }}
+                  >
+                    {umkm.isOpen ? "Buka Sekarang" : "Tutup"}
+                  </span>
+                </div>
               </div>
 
-              <p style={{ fontSize: 14, color: "var(--foreground-secondary)", lineHeight: 1.6, marginBottom: 12 }}>
+              <p style={{ fontSize: 14, color: "var(--foreground-secondary)", lineHeight: 1.6, marginBottom: 14 }}>
                 {umkm.description}
               </p>
 
               <div style={{ display: "flex", flexDirection: "column", gap: 8, fontSize: 13, color: "var(--muted)" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  <MapPin size={14} style={{ color: "var(--primary)", flexShrink: 0 }} />
-                  {umkm.address} {umkm.distance && `(${umkm.distance})`}
+                  <MapPin size={15} style={{ color: "var(--primary)", flexShrink: 0 }} />
+                  <span style={{ color: "var(--foreground)" }}>
+                    {umkm.address} {umkm.distance && <strong>• {umkm.distance} dari Kampus Ketintang</strong>}
+                  </span>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                  <Clock size={14} style={{ color: "var(--muted)", flexShrink: 0 }} />
-                  Jam Operasional: {umkm.operatingHours}
+                  <Clock size={15} style={{ color: "var(--muted)", flexShrink: 0 }} />
+                  <span>Jam Buka: {umkm.operatingHours}</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Products */}
-        <div style={{ paddingBottom: 40 }}>
-          <h2 style={{ fontSize: 18, fontWeight: 700, marginBottom: 20 }}>
-            Menu ({products.length} produk)
-          </h2>
+        {/* Menu Tabs & Products */}
+        <div style={{ paddingBottom: 50 }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+              gap: 12,
+              marginBottom: 20,
+            }}
+          >
+            <h2 style={{ fontSize: 20, fontWeight: 800, color: "var(--foreground)" }}>
+              Daftar Menu ({products.length})
+            </h2>
+
+            {/* Filter Tabs */}
+            <div className="scroll-x" style={{ gap: 8 }}>
+              <button
+                type="button"
+                onClick={() => setSelectedTab("all")}
+                className="btn btn-sm"
+                style={{
+                  borderRadius: "var(--radius-full)",
+                  backgroundColor: selectedTab === "all" ? "var(--primary)" : "var(--surface)",
+                  color: selectedTab === "all" ? "#fff" : "var(--foreground)",
+                  border: "1px solid var(--border)",
+                  fontSize: 12,
+                  fontWeight: 600,
+                  padding: "6px 14px",
+                }}
+              >
+                Semua ({allProducts.length})
+              </button>
+
+              {surplusCount > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setSelectedTab("surplus")}
+                  className="btn btn-sm"
+                  style={{
+                    borderRadius: "var(--radius-full)",
+                    backgroundColor: selectedTab === "surplus" ? "var(--success)" : "var(--surface)",
+                    color: selectedTab === "surplus" ? "#fff" : "var(--foreground)",
+                    border: "1px solid var(--border)",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    padding: "6px 14px",
+                    gap: 5,
+                  }}
+                >
+                  <Leaf size={13} />
+                  <span>Surplus Rescue ({surplusCount})</span>
+                </button>
+              )}
+
+              {flashCount > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setSelectedTab("flash")}
+                  className="btn btn-sm"
+                  style={{
+                    borderRadius: "var(--radius-full)",
+                    backgroundColor: selectedTab === "flash" ? "var(--warning)" : "var(--surface)",
+                    color: selectedTab === "flash" ? "#fff" : "var(--foreground)",
+                    border: "1px solid var(--border)",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    padding: "6px 14px",
+                    gap: 5,
+                  }}
+                >
+                  <Zap size={13} />
+                  <span>Flash Deal ({flashCount})</span>
+                </button>
+              )}
+
+              <button
+                type="button"
+                onClick={() => setSelectedTab("normal")}
+                className="btn btn-sm"
+                style={{
+                  borderRadius: "var(--radius-full)",
+                  backgroundColor: selectedTab === "normal" ? "var(--primary)" : "var(--surface)",
+                  color: selectedTab === "normal" ? "#fff" : "var(--foreground)",
+                  border: "1px solid var(--border)",
+                  fontSize: 12,
+                  fontWeight: 600,
+                  padding: "6px 14px",
+                }}
+              >
+                Menu Normal
+              </button>
+            </div>
+          </div>
+
           {products.length > 0 ? (
             <div className="grid-products">
               {products.map((product) => (
@@ -152,8 +268,26 @@ export default function UMKMDetail() {
               ))}
             </div>
           ) : (
-            <div style={{ textAlign: "center", padding: "40px 20px", color: "var(--muted)" }}>
-              <p>Belum ada produk tersedia.</p>
+            <div
+              style={{
+                textAlign: "center",
+                padding: "50px 20px",
+                backgroundColor: "var(--surface)",
+                borderRadius: "var(--radius-xl)",
+                border: "1px dashed var(--border)",
+              }}
+            >
+              <p style={{ color: "var(--muted)", fontSize: 14 }}>
+                Tidak ada menu dalam kategori ini.
+              </p>
+              <button
+                type="button"
+                className="btn btn-sm btn-outline"
+                onClick={() => setSelectedTab("all")}
+                style={{ marginTop: 12, borderRadius: "var(--radius-full)" }}
+              >
+                Tampilkan Semua Menu
+              </button>
             </div>
           )}
         </div>

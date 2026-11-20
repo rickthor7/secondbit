@@ -1,4 +1,4 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import {
   Star,
   MapPin,
@@ -11,14 +11,18 @@ import {
   Share2,
   Heart,
   Info,
+  CheckCircle2,
+  Sparkles,
+  QrCode,
 } from "lucide-react";
 import { useState } from "react";
 import Swal from "sweetalert2";
-import { getProductBySlug, getProductsByUMKM, formatPrice, getDiscountPercent, reviews } from "@/data/mockData";
+import { getProductBySlug, getProductsByUMKM, formatPrice, getDiscountPercent, reviews, umkmList } from "@/data/mockData";
 import ProductCard from "@/components/shared/ProductCard";
 
 export default function ProductDetail() {
   const { slug } = useParams<{ slug: string }>();
+  const navigate = useNavigate();
   const product = getProductBySlug(slug || "");
   const [qty, setQty] = useState(1);
   const [isFav, setIsFav] = useState(false);
@@ -27,12 +31,15 @@ export default function ProductDetail() {
     return (
       <div className="container" style={{ padding: "80px 16px", textAlign: "center" }}>
         <div style={{ fontSize: 48, marginBottom: 12 }}>🍽️</div>
-        <h2 style={{ fontSize: 20, fontWeight: 600, marginBottom: 8 }}>Produk tidak ditemukan</h2>
-        <Link to="/explore" className="btn btn-primary">Kembali ke Jelajahi</Link>
+        <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 8 }}>Produk tidak ditemukan</h2>
+        <Link to="/explore" className="btn btn-primary" style={{ borderRadius: "var(--radius-full)" }}>
+          Kembali ke Jelajahi
+        </Link>
       </div>
     );
   }
 
+  const umkm = umkmList.find((u) => u.id === product.umkmId || u.name === product.umkmName);
   const hasDiscount = product.originalPrice && product.originalPrice > product.price;
   const discountPercent = hasDiscount ? getDiscountPercent(product.originalPrice!, product.price) : 0;
   const relatedProducts = getProductsByUMKM(product.umkmId).filter((p) => p.id !== product.id);
@@ -41,11 +48,48 @@ export default function ProductDetail() {
   const handleAddToCart = () => {
     Swal.fire({
       icon: "success",
-      title: "Ditambahkan ke Keranjang!",
-      text: `${qty}x ${product.name}`,
+      title: "Berhasil Ditambahkan!",
+      text: `${qty}x ${product.name} telah masuk ke keranjang belanja Anda.`,
       confirmButtonColor: "#EE4D2D",
-      confirmButtonText: "OK",
-      timer: 2000,
+      confirmButtonText: "Lihat Keranjang",
+      showCancelButton: true,
+      cancelButtonText: "Lanjut Belanja",
+    }).then((res) => {
+      if (res.isConfirmed) {
+        navigate("/buyer/orders");
+      }
+    });
+  };
+
+  const handleBuyNow = () => {
+    Swal.fire({
+      title: "Konfirmasi Pesanan Pickup",
+      html: `
+        <div style="text-align: left; font-size: 14px;">
+          <p><strong>Item:</strong> ${qty}x ${product.name}</p>
+          <p><strong>Total:</strong> <span style="color: #EE4D2D; font-weight: 700;">${formatPrice(product.price * qty)}</span></p>
+          <p><strong>Metode:</strong> QRIS Closed-Loop</p>
+          <p><strong>Lokasi Pickup:</strong> ${product.umkmName}</p>
+          <p style="font-size: 12px; color: #757575; margin-top: 8px;">Tiket QR Pickup unik akan otomatis dibuat untuk ditunjukkan ke penjual.</p>
+        </div>
+      `,
+      icon: "info",
+      showCancelButton: true,
+      confirmButtonText: "Bayar & Dapatkan Tiket QR",
+      cancelButtonText: "Batal",
+      confirmButtonColor: "#EE4D2D",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          icon: "success",
+          title: "Pembayaran Berhasil!",
+          text: "Tiket QR Pickup Anda telah diterbitkan.",
+          confirmButtonColor: "#EE4D2D",
+          confirmButtonText: "Buka Tiket Pickup",
+        }).then(() => {
+          navigate("/buyer/pickup");
+        });
+      }
     });
   };
 
@@ -187,30 +231,45 @@ export default function ProductDetail() {
 
             {/* UMKM Info */}
             <Link
-              to={`/umkm/${product.umkmId}`}
+              to={`/umkm/${umkm?.slug || product.umkmId}`}
               style={{
                 display: "flex",
                 alignItems: "center",
                 gap: 12,
                 padding: "14px 16px",
                 backgroundColor: "var(--surface)",
+                border: "1px solid var(--border)",
                 borderRadius: "var(--radius-lg)",
                 marginBottom: 20,
-                transition: "background var(--transition-fast)",
+                transition: "all var(--transition-fast)",
               }}
               onMouseOver={(e) => (e.currentTarget.style.backgroundColor = "var(--surface-hover)")}
               onMouseOut={(e) => (e.currentTarget.style.backgroundColor = "var(--surface)")}
             >
-              <MapPin size={18} style={{ color: "var(--primary)", flexShrink: 0 }} />
-              <div>
-                <div style={{ fontSize: 14, fontWeight: 600 }}>{product.umkmName}</div>
-                <div style={{ fontSize: 12, color: "var(--muted)" }}>Lihat toko →</div>
+              <div
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: "var(--radius-md)",
+                  backgroundColor: "var(--primary-light)",
+                  color: "var(--primary)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}
+              >
+                <MapPin size={20} />
+              </div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: "var(--foreground)" }}>{product.umkmName}</div>
+                <div style={{ fontSize: 12, color: "var(--muted)" }}>{umkm?.address || "Sekitar UNESA Ketintang"} • Lihat toko & menu →</div>
               </div>
             </Link>
 
             {/* Description */}
             <div style={{ marginBottom: 20 }}>
-              <h3 style={{ fontSize: 15, fontWeight: 600, marginBottom: 8 }}>Deskripsi</h3>
+              <h3 style={{ fontSize: 15, fontWeight: 700, marginBottom: 8, color: "var(--foreground)" }}>Deskripsi Makanan</h3>
               <p style={{ fontSize: 14, color: "var(--foreground-secondary)", lineHeight: 1.7 }}>
                 {product.description}
               </p>
@@ -221,6 +280,7 @@ export default function ProductDetail() {
               <div
                 style={{
                   backgroundColor: "var(--success-light)",
+                  border: "1px solid rgba(38, 170, 108, 0.2)",
                   borderRadius: "var(--radius-lg)",
                   padding: "16px 20px",
                   marginBottom: 20,
@@ -228,25 +288,25 @@ export default function ProductDetail() {
               >
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
                   <ShieldCheck size={18} style={{ color: "var(--success)" }} />
-                  <h3 style={{ fontSize: 14, fontWeight: 600, color: "var(--success)" }}>Info Keamanan Pangan</h3>
+                  <h3 style={{ fontSize: 14, fontWeight: 700, color: "var(--success)" }}>Transparansi Ketahanan Pangan</h3>
                 </div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                   {product.productionTime && (
-                    <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "var(--foreground)" }}>
                       <Clock size={14} style={{ color: "var(--muted)" }} />
                       <span>Waktu Produksi: <strong>{product.productionTime}</strong></span>
                     </div>
                   )}
                   {product.shelfLife && (
-                    <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "var(--foreground)" }}>
                       <Info size={14} style={{ color: "var(--muted)" }} />
-                      <span>Masa Simpan: <strong>{product.shelfLife}</strong></span>
+                      <span>Estimasi Layak Konsumsi: <strong>{product.shelfLife}</strong></span>
                     </div>
                   )}
                   {product.pickupTime && (
-                    <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "var(--foreground)" }}>
                       <Clock size={14} style={{ color: "var(--warning)" }} />
-                      <span style={{ color: "var(--warning)", fontWeight: 600 }}>{product.pickupTime}</span>
+                      <span>Waktu Pickup di Lokasi: <strong style={{ color: "var(--warning)" }}>{product.pickupTime}</strong></span>
                     </div>
                   )}
                 </div>
@@ -255,62 +315,80 @@ export default function ProductDetail() {
 
             {/* Stock */}
             <div style={{ fontSize: 13, color: "var(--muted)", marginBottom: 16 }}>
-              Stok: <strong style={{ color: product.stock <= 5 ? "var(--destructive)" : "var(--foreground)" }}>{product.stock} porsi</strong>
+              Ketersediaan: <strong style={{ color: product.stock <= 5 ? "var(--destructive)" : "var(--foreground)" }}>{product.stock} porsi tersedia</strong>
             </div>
 
-            {/* Quantity + Add to Cart */}
+            {/* Quantity + Actions */}
             <div
               style={{
                 display: "flex",
+                flexDirection: "column",
                 gap: 12,
-                alignItems: "center",
-                flexWrap: "wrap",
               }}
             >
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 0,
-                  border: "1.5px solid var(--border)",
-                  borderRadius: "var(--radius-md)",
-                  overflow: "hidden",
-                }}
-              >
-                <button
-                  className="btn btn-icon btn-ghost"
-                  onClick={() => setQty(Math.max(1, qty - 1))}
-                  style={{ borderRadius: 0, width: 40, height: 40 }}
-                >
-                  <Minus size={16} />
-                </button>
-                <span
+              <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+                <span style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)" }}>Jumlah:</span>
+                <div
                   style={{
-                    width: 48,
-                    textAlign: "center",
-                    fontWeight: 600,
-                    fontSize: 15,
-                    fontVariantNumeric: "tabular-nums",
+                    display: "flex",
+                    alignItems: "center",
+                    border: "1.5px solid var(--border)",
+                    borderRadius: "var(--radius-md)",
+                    overflow: "hidden",
+                    backgroundColor: "var(--surface)",
                   }}
                 >
-                  {qty}
-                </span>
+                  <button
+                    className="btn btn-icon btn-ghost"
+                    onClick={() => setQty(Math.max(1, qty - 1))}
+                    style={{ borderRadius: 0, width: 36, height: 36 }}
+                    aria-label="Kurangi"
+                  >
+                    <Minus size={15} />
+                  </button>
+                  <span
+                    style={{
+                      width: 44,
+                      textAlign: "center",
+                      fontWeight: 700,
+                      fontSize: 15,
+                      fontVariantNumeric: "tabular-nums",
+                    }}
+                  >
+                    {qty}
+                  </span>
+                  <button
+                    className="btn btn-icon btn-ghost"
+                    onClick={() => setQty(Math.min(product.stock, qty + 1))}
+                    style={{ borderRadius: 0, width: 36, height: 36 }}
+                    aria-label="Tambah"
+                  >
+                    <Plus size={15} />
+                  </button>
+                </div>
+                <div style={{ fontSize: 13, color: "var(--muted)" }}>
+                  Subtotal: <strong style={{ color: "var(--primary)" }}>{formatPrice(product.price * qty)}</strong>
+                </div>
+              </div>
+
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
                 <button
-                  className="btn btn-icon btn-ghost"
-                  onClick={() => setQty(Math.min(product.stock, qty + 1))}
-                  style={{ borderRadius: 0, width: 40, height: 40 }}
+                  className="btn btn-secondary btn-lg"
+                  onClick={handleAddToCart}
+                  style={{ flex: 1, minWidth: 180, borderRadius: "var(--radius-lg)" }}
                 >
-                  <Plus size={16} />
+                  <ShoppingCart size={18} />
+                  <span>+ Keranjang</span>
+                </button>
+                <button
+                  className="btn btn-primary btn-lg"
+                  onClick={handleBuyNow}
+                  style={{ flex: 1.2, minWidth: 200, borderRadius: "var(--radius-lg)" }}
+                >
+                  <QrCode size={18} />
+                  <span>Beli Langsung (Tiket QR)</span>
                 </button>
               </div>
-              <button
-                className="btn btn-primary btn-lg"
-                onClick={handleAddToCart}
-                style={{ flex: 1, minWidth: 200 }}
-              >
-                <ShoppingCart size={18} />
-                Tambah ke Keranjang — {formatPrice(product.price * qty)}
-              </button>
             </div>
           </div>
         </div>

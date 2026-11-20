@@ -21,8 +21,9 @@ export default function Panel({
     <section
       style={{
         backgroundColor: "var(--background)",
+        border: "1px solid var(--border)",
         borderRadius: "var(--radius-xl)",
-        boxShadow: "var(--shadow-sm)",
+        boxShadow: "var(--shadow-card)",
         padding: padded ? 20 : 0,
         minWidth: 0,
         ...style,

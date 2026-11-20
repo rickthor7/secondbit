@@ -22,11 +22,12 @@ export default function UMKMCard({ umkm }: UMKMCardProps) {
       {/* Image */}
       <div
         style={{
-          width: 120,
-          minHeight: 120,
+          width: 124,
+          minHeight: 124,
           flexShrink: 0,
           overflow: "hidden",
           position: "relative",
+          backgroundColor: "var(--surface)",
         }}
       >
         <img
@@ -37,7 +38,10 @@ export default function UMKMCard({ umkm }: UMKMCardProps) {
             width: "100%",
             height: "100%",
             objectFit: "cover",
+            transition: "transform var(--transition-slow)",
           }}
+          onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.08)")}
+          onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
         />
         {umkm.isMVP && (
           <div
@@ -47,7 +51,7 @@ export default function UMKMCard({ umkm }: UMKMCardProps) {
               left: 8,
             }}
           >
-            <span className="badge badge-mvp">
+            <span className="badge badge-mvp" style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.2)" }}>
               <Award size={10} /> MVP
             </span>
           </div>
@@ -141,19 +145,19 @@ export default function UMKMCard({ umkm }: UMKMCardProps) {
             marginTop: "auto",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-            <Clock size={12} style={{ color: umkm.isOpen ? "var(--success)" : "var(--destructive)" }} />
+          <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+            <span className={umkm.isOpen ? "pulse-dot-green" : "pulse-dot-orange"} />
             <span
               style={{
-                fontWeight: 600,
+                fontWeight: 700,
                 color: umkm.isOpen ? "var(--success)" : "var(--destructive)",
               }}
             >
-              {umkm.isOpen ? "Buka" : "Tutup"}
+              {umkm.isOpen ? "Buka Sekarang" : "Tutup"}
             </span>
           </div>
           <span style={{ color: "var(--muted)" }}>•</span>
-          <span style={{ color: "var(--muted)" }}>{umkm.operatingHours}</span>
+          <span style={{ color: "var(--muted)", fontWeight: 500 }}>{umkm.operatingHours}</span>
         </div>
       </div>
     </Link>

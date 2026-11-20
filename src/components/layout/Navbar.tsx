@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Search,
   ShoppingCart,
@@ -20,7 +20,16 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const location = useLocation();
+  const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/explore?q=${encodeURIComponent(searchQuery.trim())}`);
+      setIsMobileMenuOpen(false);
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
@@ -216,7 +225,8 @@ export default function Navbar() {
             </Link>
 
             {/* Search Bar - Desktop */}
-            <div
+            <form
+              onSubmit={handleSearchSubmit}
               style={{
                 flex: 1,
                 display: "none",
@@ -232,22 +242,45 @@ export default function Navbar() {
                   top: "50%",
                   transform: "translateY(-50%)",
                   color: "var(--muted-light)",
+                  pointerEvents: "none",
                 }}
               />
               <input
                 className="input"
                 type="text"
-                placeholder="Cari makanan, UMKM, atau kategori..."
+                placeholder="Cari nasi pecel, bakso, geprek, atau warung sekitar UNESA..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 style={{
                   paddingLeft: 42,
+                  paddingRight: 40,
                   borderRadius: "var(--radius-full)",
                   backgroundColor: "var(--surface)",
-                  border: "none",
+                  border: "1px solid var(--border)",
+                  fontSize: 13,
+                  transition: "all var(--transition-fast)",
                 }}
               />
-            </div>
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery("")}
+                  style={{
+                    position: "absolute",
+                    right: 12,
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    background: "none",
+                    border: "none",
+                    color: "var(--muted)",
+                    cursor: "pointer",
+                    padding: 4,
+                  }}
+                >
+                  <X size={14} />
+                </button>
+              )}
+            </form>
 
             {/* Nav Links - Desktop */}
             <nav
@@ -261,11 +294,11 @@ export default function Navbar() {
                   style={{
                     padding: "8px 14px",
                     fontSize: 14,
-                    fontWeight: isActive(link.path) ? 600 : 500,
+                    fontWeight: isActive(link.path) ? 700 : 500,
                     color: isActive(link.path)
                       ? "var(--primary)"
                       : "var(--foreground)",
-                    borderRadius: "var(--radius-md)",
+                    borderRadius: "var(--radius-full)",
                     transition: "all var(--transition-fast)",
                     whiteSpace: "nowrap",
                     backgroundColor: isActive(link.path)
@@ -283,7 +316,7 @@ export default function Navbar() {
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: 4,
+                gap: 6,
                 marginLeft: "auto",
               }}
             >
@@ -316,8 +349,36 @@ export default function Navbar() {
               >
                 <Search size={20} />
               </Link>
-              <Link to="/buyer" className="btn btn-icon btn-ghost" aria-label="Cart">
+
+              {/* Shopping Cart with dynamic badge */}
+              <Link
+                to="/buyer"
+                className="btn btn-icon btn-ghost"
+                aria-label="Cart"
+                style={{ position: "relative" }}
+                title="Keranjang & Pesanan Aktif"
+              >
                 <ShoppingCart size={20} />
+                <span
+                  style={{
+                    position: "absolute",
+                    top: 2,
+                    right: 2,
+                    backgroundColor: "var(--primary)",
+                    color: "#fff",
+                    fontSize: 10,
+                    fontWeight: 700,
+                    width: 16,
+                    height: 16,
+                    borderRadius: "var(--radius-full)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    boxShadow: "0 2px 4px rgba(238, 77, 45, 0.4)",
+                  }}
+                >
+                  2
+                </span>
               </Link>
               {auth?.isLoggedIn ? (
                 <Link
@@ -362,7 +423,7 @@ export default function Navbar() {
             }}
           >
             {/* Mobile Search */}
-            <div style={{ position: "relative", marginBottom: 16 }}>
+            <form onSubmit={handleSearchSubmit} style={{ position: "relative", marginBottom: 16 }}>
               <Search
                 size={18}
                 style={{
@@ -371,22 +432,23 @@ export default function Navbar() {
                   top: "50%",
                   transform: "translateY(-50%)",
                   color: "var(--muted-light)",
+                  pointerEvents: "none",
                 }}
               />
               <input
                 className="input"
                 type="text"
-                placeholder="Cari makanan, UMKM..."
+                placeholder="Cari makanan atau UMKM..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 style={{
                   paddingLeft: 42,
                   borderRadius: "var(--radius-full)",
                   backgroundColor: "var(--surface)",
-                  border: "none",
+                  border: "1px solid var(--border)",
                 }}
               />
-            </div>
+            </form>
             <nav style={{ display: "flex", flexDirection: "column", gap: 2 }}>
               {navLinks.map((link) => (
                 <Link

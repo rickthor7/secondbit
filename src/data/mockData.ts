@@ -584,9 +584,9 @@ export function getProductById(id: string): Product | undefined {
 }
 
 export function getProductBySlug(slug: string): Product | undefined {
-  return products.find((p) => p.slug === slug);
+  return products.find((p) => p.slug === slug || p.id === slug);
 }
 
 export function getUMKMBySlug(slug: string): UMKM | undefined {
-  return umkmList.find((u) => u.slug === slug);
+  return umkmList.find((u) => u.slug === slug || u.id === slug);
 }

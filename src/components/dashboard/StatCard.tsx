@@ -32,13 +32,15 @@ export default function StatCard({
     <div
       style={{
         backgroundColor: "var(--background)",
+        border: "1px solid var(--border)",
         borderRadius: "var(--radius-xl)",
-        boxShadow: "var(--shadow-sm)",
+        boxShadow: "var(--shadow-card)",
         padding: "18px 20px",
         display: "flex",
         flexDirection: "column",
         gap: 2,
         minWidth: 0,
+        transition: "all var(--transition-fast)",
       }}
     >
       <div

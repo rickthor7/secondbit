@@ -11,6 +11,11 @@ import {
   Star,
   ArrowRight,
   Sparkles,
+  ShoppingBag,
+  QrCode,
+  CheckCircle2,
+  Users,
+  Coins,
 } from "lucide-react";
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -204,6 +209,89 @@ export default function Home() {
                 <span>📱</span> Ambil Pesanan via QRIS
               </div>
             </div>
+          </div>
+
+          {/* ===== Live Platform Highlights ===== */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+              gap: 12,
+              marginTop: 14,
+            }}
+            data-aos="fade-up"
+          >
+            {[
+              {
+                icon: Leaf,
+                val: "1.420+ Porsi",
+                label: "Makanan Diselamatkan",
+                color: "var(--success)",
+                bg: "var(--success-light)",
+              },
+              {
+                icon: Coins,
+                val: "Rp 18,2 Juta",
+                label: "Hemat Uang Saku Mahasiswa",
+                color: "var(--primary)",
+                bg: "var(--primary-light)",
+              },
+              {
+                icon: Users,
+                val: "28 Mitra UMKM",
+                label: "Sekitar UNESA Ketintang",
+                color: "#6366F1",
+                bg: "rgba(99, 102, 241, 0.1)",
+              },
+              {
+                icon: QrCode,
+                val: "100% Closed-Loop",
+                label: "Tiket QR Pickup Terverifikasi",
+                color: "#D97706",
+                bg: "rgba(245, 158, 11, 0.1)",
+              },
+            ].map((stat, i) => {
+              const Icon = stat.icon;
+              return (
+                <div
+                  key={i}
+                  style={{
+                    backgroundColor: "var(--surface)",
+                    border: "1px solid var(--border)",
+                    borderRadius: "var(--radius-lg)",
+                    padding: "12px 16px",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                    boxShadow: "var(--shadow-sm)",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: 38,
+                      height: 38,
+                      borderRadius: "var(--radius-md)",
+                      backgroundColor: stat.bg,
+                      color: stat.color,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      flexShrink: 0,
+                    }}
+                  >
+                    <Icon size={18} />
+                  </div>
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ fontSize: 15, fontWeight: 800, color: "var(--foreground)", lineHeight: 1.2 }}>
+                      {stat.val}
+                    </div>
+                    <div style={{ fontSize: 11, color: "var(--muted)", fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                      {stat.label}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -543,6 +631,230 @@ export default function Home() {
           <div className="grid-umkm">
             {hiddenGems.slice(0, 3).map((umkm) => (
               <UMKMCard key={umkm.id} umkm={umkm} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== Cara Kerja (How It Works) ===== */}
+      <section className="section" data-aos="fade-up">
+        <div className="container">
+          <div style={{ textAlign: "center", maxWidth: 600, margin: "0 auto 32px" }}>
+            <span
+              style={{
+                backgroundColor: "var(--primary-light)",
+                color: "var(--primary)",
+                fontSize: 11,
+                fontWeight: 700,
+                padding: "4px 12px",
+                borderRadius: "var(--radius-full)",
+                textTransform: "uppercase",
+                letterSpacing: "0.5px",
+              }}
+            >
+              Mudah & Cepat
+            </span>
+            <h2 style={{ fontSize: 24, fontWeight: 800, marginTop: 8, marginBottom: 8, color: "var(--foreground)" }}>
+              Cara Kerja SecondBit
+            </h2>
+            <p style={{ fontSize: 14, color: "var(--muted)" }}>
+              Hanya butuh 3 langkah sederhana untuk menikmati kuliner hemat sekaligus kurangi food waste di sekitar kampus.
+            </p>
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+              gap: 20,
+            }}
+          >
+            {[
+              {
+                step: "01",
+                icon: ShoppingBag,
+                title: "1. Temukan Makanan & Surplus",
+                desc: "Pilih menu normal, Flash Deal harian, atau Surplus Rescue dengan potongan harga hingga 70% dari UMKM Ketintang.",
+                color: "var(--primary)",
+                bg: "var(--primary-light)",
+              },
+              {
+                step: "02",
+                icon: Coins,
+                title: "2. Bayar Digital & Terima Tiket",
+                desc: "Bayar otomatis via simulasi QRIS closed-loop dan langsung dapatkan Tiket QR Pickup dinamis tanpa repot screenshot.",
+                color: "#6366F1",
+                bg: "rgba(99, 102, 241, 0.1)",
+              },
+              {
+                step: "03",
+                icon: QrCode,
+                title: "3. Ambil Pesanan di UMKM",
+                desc: "Kunjungi warung pada rentang waktu pickup, tunjukkan kode QR untuk discan oleh penjual, dan bawa pulang makanan lezatmu!",
+                color: "var(--success)",
+                bg: "var(--success-light)",
+              },
+            ].map((item, idx) => {
+              const Icon = item.icon;
+              return (
+                <div
+                  key={idx}
+                  style={{
+                    backgroundColor: "var(--surface)",
+                    border: "1px solid var(--border)",
+                    borderRadius: "var(--radius-xl)",
+                    padding: "24px 20px",
+                    position: "relative",
+                    overflow: "hidden",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: 12,
+                    boxShadow: "var(--shadow-sm)",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: 44,
+                        height: 44,
+                        borderRadius: "var(--radius-lg)",
+                        backgroundColor: item.bg,
+                        color: item.color,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <Icon size={22} />
+                    </div>
+                    <span
+                      style={{
+                        fontSize: 22,
+                        fontWeight: 900,
+                        color: "var(--border)",
+                        fontFamily: "monospace",
+                      }}
+                    >
+                      {item.step}
+                    </span>
+                  </div>
+                  <div>
+                    <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 6, color: "var(--foreground)" }}>
+                      {item.title}
+                    </h3>
+                    <p style={{ fontSize: 13, color: "var(--foreground-secondary)", lineHeight: 1.5 }}>
+                      {item.desc}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== Testimonials (Mahasiswa UNESA) ===== */}
+      <section
+        className="section"
+        style={{
+          backgroundColor: "var(--surface)",
+          padding: "40px 0",
+        }}
+        data-aos="fade-up"
+      >
+        <div className="container">
+          <div style={{ textAlign: "center", maxWidth: 600, margin: "0 auto 32px" }}>
+            <span
+              style={{
+                backgroundColor: "var(--success-light)",
+                color: "var(--success)",
+                fontSize: 11,
+                fontWeight: 700,
+                padding: "4px 12px",
+                borderRadius: "var(--radius-full)",
+                textTransform: "uppercase",
+                letterSpacing: "0.5px",
+              }}
+            >
+              Komunitas Peduli
+            </span>
+            <h2 style={{ fontSize: 24, fontWeight: 800, marginTop: 8, marginBottom: 8, color: "var(--foreground)" }}>
+              Apa Kata Mahasiswa UNESA?
+            </h2>
+            <p style={{ fontSize: 14, color: "var(--muted)" }}>
+              Cerita nyata mereka yang hemat budget dan bantu selamatkan makanan lezat setiap hari.
+            </p>
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+              gap: 20,
+            }}
+          >
+            {[
+              {
+                name: "Bayu Pratama",
+                role: "Mahasiswa FT UNESA (Ketintang)",
+                comment: "Nasi pecel Bu Siti jam 8 malam dapat harga Rp 8.000, porsi kenyang dan rasanya tetap mantap. Uang bulanan terselamatkan!",
+                stars: 5,
+                food: "Pecel Bu Siti • Surplus Rescue",
+              },
+              {
+                name: "Dinda Ayu",
+                role: "Mahasiswa FBS UNESA",
+                comment: "Suka banget sama konsep Food Rescue-nya. Sambil jajan hemat di akhir bulan, kita ikut andil nyata mengurangi food waste di Surabaya.",
+                stars: 5,
+                food: "Bakso Pak Darmo • Flash Deal",
+              },
+              {
+                name: "Farhan Maulana",
+                role: "Mahasiswa FEB UNESA",
+                comment: "Sistem QR Pickup-nya cepat banget, tinggal tunjukin QR ke kasir langsung dapat makanan tanpa antre lama. Top markotop!",
+                stars: 5,
+                food: "Ayam Geprek Mas Eko • Best Seller",
+              },
+            ].map((review, idx) => (
+              <div
+                key={idx}
+                style={{
+                  backgroundColor: "var(--background)",
+                  border: "1px solid var(--border)",
+                  borderRadius: "var(--radius-xl)",
+                  padding: "20px",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 12,
+                  boxShadow: "var(--shadow-card)",
+                }}
+              >
+                <div style={{ display: "flex", gap: 3 }}>
+                  {Array.from({ length: review.stars }).map((_, s) => (
+                    <Star key={s} size={14} fill="var(--warning)" stroke="var(--warning)" />
+                  ))}
+                </div>
+                <p style={{ fontSize: 13.5, fontStyle: "italic", color: "var(--foreground)", lineHeight: 1.5, flex: 1 }}>
+                  "{review.comment}"
+                </p>
+                <div style={{ paddingTop: 8, borderTop: "1px solid var(--border-light)" }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: "var(--foreground)" }}>
+                    {review.name}
+                  </div>
+                  <div style={{ fontSize: 11, color: "var(--muted)", fontWeight: 500 }}>
+                    {review.role}
+                  </div>
+                  <div style={{ fontSize: 11, color: "var(--primary)", fontWeight: 600, marginTop: 4 }}>
+                    🛒 {review.food}
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
         </div>
