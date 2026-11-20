@@ -126,14 +126,7 @@ export default function AdminReports() {
           }
         />
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
-            gap: 12,
-            marginBottom: 20,
-          }}
-        >
+        <div className="admin-stats-4-grid">
           <StatCard label="GMV Bulan Ini" value={formatPrice(42500000)} icon={DollarSign} tone="success" hint="+22% vs bulan lalu" />
           <StatCard label="Pendapatan Platform" value={formatPrice(3400000)} icon={TrendingUp} tone="primary" hint="fee 8%" />
           <StatCard label="Transaksi Hari Ini" value="127" icon={ShoppingBag} tone="info" hint="+15% vs kemarin" />

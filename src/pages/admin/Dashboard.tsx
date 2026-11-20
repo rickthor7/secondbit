@@ -416,10 +416,9 @@ export default function AdminDashboard() {
       <div
         style={{
           background: "linear-gradient(135deg, #111827 0%, #1F2937 50%, #1E1B4B 100%)",
-          padding: "36px 0 52px",
+          padding: "28px 0 32px",
           color: "#fff",
           position: "relative",
-          overflow: "hidden",
         }}
       >
         <div className="container" style={{ position: "relative", zIndex: 1 }}>
@@ -433,7 +432,7 @@ export default function AdminDashboard() {
             }}
           >
             <div>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6, flexWrap: "wrap" }}>
                 <span
                   style={{
                     backgroundColor: "rgba(99, 102, 241, 0.25)",
@@ -453,10 +452,10 @@ export default function AdminDashboard() {
                   Kawasan UNESA Ketintang, Surabaya
                 </span>
               </div>
-              <h1 style={{ fontSize: "clamp(22px, 3.2vw, 28px)", fontWeight: 800, lineHeight: 1.2 }}>
+              <h1 style={{ fontSize: "clamp(20px, 3.2vw, 28px)", fontWeight: 800, lineHeight: 1.25 }}>
                 Dashboard Manajemen Platform
               </h1>
-              <p style={{ fontSize: 13.5, opacity: 0.85, marginTop: 4 }}>
+              <p style={{ fontSize: 13.5, opacity: 0.85, marginTop: 6, maxWidth: 650, lineHeight: 1.5 }}>
                 Pantau metrik GMV, transaksi, penyelamatan makanan surplus, serta verifikasi mitra secara langsung.
               </p>
             </div>
@@ -487,7 +486,7 @@ export default function AdminDashboard() {
                 onClick={handleAdjustFee}
                 className="btn btn-sm"
                 style={{
-                  backgroundColor: "rgba(238, 77, 45, 0.85)",
+                  backgroundColor: "rgba(238, 77, 45, 0.9)",
                   color: "#fff",
                   border: "none",
                   borderRadius: "var(--radius-full)",
@@ -504,21 +503,21 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      <div className="container" style={{ marginTop: -26 }}>
+      <div className="container" style={{ paddingTop: 20 }}>
         {/* Time Filter Bar */}
         <div
           style={{
             backgroundColor: "var(--background)",
             border: "1px solid var(--border)",
             borderRadius: "var(--radius-xl)",
-            padding: "8px 16px",
+            padding: "10px 16px",
             marginBottom: 20,
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
             flexWrap: "wrap",
-            gap: 10,
-            boxShadow: "var(--shadow-sm)",
+            gap: 12,
+            boxShadow: "var(--shadow-card)",
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: "var(--muted)", fontWeight: 600 }}>
@@ -526,7 +525,7 @@ export default function AdminDashboard() {
             <span>Rentang Waktu Laporan:</span>
           </div>
 
-          <div className="scroll-x" style={{ gap: 6 }}>
+          <div className="scroll-x" style={{ gap: 6, maxWidth: "100%", paddingBottom: 2 }}>
             {[
               { id: "today", label: "Hari Ini" },
               { id: "7d", label: "7 Hari Terakhir" },
@@ -546,6 +545,7 @@ export default function AdminDashboard() {
                   fontSize: 12,
                   fontWeight: 600,
                   padding: "5px 14px",
+                  whiteSpace: "nowrap",
                   transition: "all var(--transition-fast)",
                 }}
               >
@@ -558,13 +558,7 @@ export default function AdminDashboard() {
         {/* Dynamic KPI Cards */}
         <div
           id="admin-overview"
-          className="dash-section"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-            gap: 14,
-            marginBottom: 24,
-          }}
+          className="dash-section admin-kpi-grid"
         >
           {[
             {
@@ -631,39 +625,51 @@ export default function AdminDashboard() {
                   border: "1px solid var(--border)",
                   borderRadius: "var(--radius-xl)",
                   boxShadow: "var(--shadow-card)",
-                  padding: "18px 20px",
+                  padding: "16px 16px",
                   display: "flex",
                   flexDirection: "column",
                   gap: 8,
+                  minWidth: 0,
                 }}
               >
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                  <span style={{ fontSize: 12, color: "var(--muted)", fontWeight: 600 }}>{kpi.label}</span>
+                  <span style={{ fontSize: 11.5, color: "var(--muted)", fontWeight: 600 }}>{kpi.label}</span>
                   <div
                     style={{
-                      width: 32,
-                      height: 32,
+                      width: 30,
+                      height: 30,
                       borderRadius: "var(--radius-md)",
                       backgroundColor: kpi.bg,
                       color: kpi.color,
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
+                      flexShrink: 0,
                     }}
                   >
-                    <Icon size={16} />
+                    <Icon size={15} />
                   </div>
                 </div>
 
                 <div>
-                  <div style={{ fontSize: 20, fontWeight: 900, color: "var(--foreground)", letterSpacing: "-0.4px" }}>
+                  <div
+                    style={{
+                      fontSize: "clamp(16px, 1.6vw, 20px)",
+                      fontWeight: 900,
+                      color: "var(--foreground)",
+                      letterSpacing: "-0.4px",
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                    }}
+                  >
                     {kpi.value}
                   </div>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 4 }}>
-                    <span style={{ fontSize: 11, color: "var(--muted)", fontWeight: 500 }}>{kpi.change}</span>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: 4, flexWrap: "wrap", gap: 4 }}>
+                    <span style={{ fontSize: 10.5, color: "var(--muted)", fontWeight: 500 }}>{kpi.change}</span>
                     <span
                       style={{
-                        fontSize: 9.5,
+                        fontSize: 9,
                         fontWeight: 700,
                         backgroundColor: "var(--surface)",
                         border: "1px solid var(--border)",
@@ -757,8 +763,8 @@ export default function AdminDashboard() {
                     transition: "all var(--transition-fast)",
                   }}
                 >
-                  <div style={{ minWidth: 200, flex: 1 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <div style={{ minWidth: 200, flex: "1 1 240px" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
                       <h4 style={{ fontSize: 14, fontWeight: 700, color: "var(--foreground)" }}>
                         {item.name}
                       </h4>
@@ -775,12 +781,12 @@ export default function AdminDashboard() {
                         {item.category}
                       </span>
                     </div>
-                    <div style={{ fontSize: 12, color: "var(--muted)", marginTop: 2 }}>
+                    <div style={{ fontSize: 12, color: "var(--muted)", marginTop: 4, lineHeight: 1.5, wordBreak: "break-word" }}>
                       Pemilik: <strong>{item.owner}</strong> • {item.address} • NIB: <code>{item.nib}</code>
                     </div>
                   </div>
 
-                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
                     <button
                       type="button"
                       onClick={() => handleViewDetails(item)}
@@ -788,7 +794,7 @@ export default function AdminDashboard() {
                       style={{ fontSize: 12, gap: 5, borderRadius: "var(--radius-md)" }}
                     >
                       <Eye size={14} />
-                      <span>Detail Dokumen</span>
+                      <span>Detail</span>
                     </button>
 
                     <button
@@ -821,7 +827,7 @@ export default function AdminDashboard() {
                       }}
                     >
                       <CheckCircle2 size={14} />
-                      <span>Setujui (Approve)</span>
+                      <span>Setujui</span>
                     </button>
                   </div>
                 </div>
@@ -844,14 +850,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Interactive Chart + Quick Controls Section */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-            gap: 20,
-            marginBottom: 24,
-          }}
-        >
+        <div className="admin-two-col-grid">
           {/* Interactive Chart */}
           <div
             style={{
@@ -862,6 +861,7 @@ export default function AdminDashboard() {
               padding: "22px 24px",
               display: "flex",
               flexDirection: "column",
+              minWidth: 0,
             }}
           >
             <div
@@ -972,6 +972,7 @@ export default function AdminDashboard() {
                     key={item.day}
                     style={{
                       flex: 1,
+                      minWidth: 0,
                       display: "flex",
                       flexDirection: "column",
                       alignItems: "center",
@@ -1030,7 +1031,7 @@ export default function AdminDashboard() {
               })}
             </div>
 
-            <div style={{ display: "flex", justifyContent: "space-between", marginTop: 12, fontSize: 12, color: "var(--muted)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", marginTop: 12, fontSize: 12, color: "var(--muted)", flexWrap: "wrap", gap: 8 }}>
               <span>Total 7 Hari: <strong>{chartMetric === "rescue" ? "816 porsi" : formatPrice(weeklyData.reduce((a, b) => a + (chartMetric === "revenue" ? Math.round((b.gmv * platformFee) / 100) : b.gmv), 0))}</strong></span>
               <span>Rata-rata/hari: <strong>{chartMetric === "rescue" ? "116 porsi" : formatPrice(Math.round(weeklyData.reduce((a, b) => a + (chartMetric === "revenue" ? Math.round((b.gmv * platformFee) / 100) : b.gmv), 0) / 7))}</strong></span>
             </div>
@@ -1047,6 +1048,7 @@ export default function AdminDashboard() {
               display: "flex",
               flexDirection: "column",
               gap: 16,
+              minWidth: 0,
             }}
           >
             <div>
@@ -1152,7 +1154,7 @@ export default function AdminDashboard() {
               <div style={{ fontSize: 12, fontWeight: 700, color: "var(--muted)", marginBottom: 8 }}>
                 PINTASAN MODUL DATA
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", gap: 8 }}>
                 {[
                   { label: "Kelola Pembeli", path: "/admin/users" },
                   { label: "Kelola UMKM", path: "/admin/umkm" },
@@ -1258,9 +1260,10 @@ export default function AdminDashboard() {
                 style={{
                   display: "flex",
                   alignItems: "flex-start",
-                  gap: 14,
+                  gap: 12,
                   padding: "12px 0",
                   borderBottom: idx < filteredActivities.length - 1 ? "1px solid var(--border-light)" : "none",
+                  flexWrap: "wrap",
                 }}
               >
                 <div
@@ -1273,8 +1276,8 @@ export default function AdminDashboard() {
                     flexShrink: 0,
                   }}
                 />
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <div style={{ flex: 1, minWidth: 200 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
                     <span style={{ fontSize: 13.5, fontWeight: 700, color: "var(--foreground)" }}>
                       {item.action}
                     </span>
@@ -1292,11 +1295,11 @@ export default function AdminDashboard() {
                       {item.tag}
                     </span>
                   </div>
-                  <div style={{ fontSize: 12.5, color: "var(--foreground-secondary)", marginTop: 2 }}>
+                  <div style={{ fontSize: 12.5, color: "var(--foreground-secondary)", marginTop: 2, wordBreak: "break-word" }}>
                     {item.detail}
                   </div>
                 </div>
-                <span style={{ fontSize: 11, color: "var(--muted)", whiteSpace: "nowrap" }}>
+                <span style={{ fontSize: 11, color: "var(--muted)", whiteSpace: "nowrap", flexShrink: 0 }}>
                   {item.time}
                 </span>
               </div>

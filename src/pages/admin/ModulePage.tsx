@@ -261,14 +261,7 @@ export default function AdminModulePage({ moduleKey }: AdminModulePageProps) {
         />
 
         {/* Stats */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))",
-            gap: 12,
-            marginBottom: 20,
-          }}
-        >
+        <div className="admin-stats-4-grid">
           {config.stats.map((stat) => (
             <StatCard
               key={stat.label}

@@ -79,14 +79,7 @@ export default function AdminActivity() {
           }
         />
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
-            gap: 12,
-            marginBottom: 20,
-          }}
-        >
+        <div className="admin-stats-4-grid">
           <StatCard label="Event Hari Ini" value="24" icon={Activity} tone="primary" hint="+8 vs kemarin" />
           <StatCard label="Transaksi" value="127" icon={ShoppingBag} tone="success" hint="+15%" />
           <StatCard label="Ulasan Baru" value="18" icon={Star} tone="warning" />
