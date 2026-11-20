@@ -19,9 +19,25 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isTopBannerVisible, setIsTopBannerVisible] = useState(() => {
+    try {
+      return sessionStorage.getItem("secondbit-hide-top-banner") !== "true";
+    } catch {
+      return true;
+    }
+  });
   const location = useLocation();
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
+
+  const handleCloseTopBanner = () => {
+    setIsTopBannerVisible(false);
+    try {
+      sessionStorage.setItem("secondbit-hide-top-banner", "true");
+    } catch {
+      // ignore
+    }
+  };
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -89,79 +105,158 @@ export default function Navbar() {
           transition: "all var(--transition-normal)",
         }}
       >
-        {/* Top Bar with Tagline & Intro Trigger */}
-        <div
-          style={{
-            background: "linear-gradient(90deg, #EE4D2D 0%, #D73211 100%)",
-            color: "#fff",
-            fontSize: 12,
-            padding: "6px 0",
-            fontWeight: 500,
-          }}
-        >
+        {/* Top Notification Bar with Close Button */}
+        {isTopBannerVisible && (
           <div
-            className="container"
+            className="top-notification-bar"
             style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-              flexWrap: "wrap",
-              gap: 8,
+              background: "linear-gradient(90deg, #EE4D2D 0%, #D73211 100%)",
+              color: "#fff",
+              position: "relative",
+              zIndex: 205,
+              transition: "all var(--transition-fast)",
             }}
           >
-            {/* Tagline */}
-            <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-              <span
+            <div
+              className="container"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 8,
+              }}
+            >
+              {/* Left / Main text */}
+              <div
                 style={{
-                  backgroundColor: "rgba(255,255,255,0.22)",
-                  padding: "2px 8px",
-                  borderRadius: "var(--radius-full)",
-                  fontSize: 11,
-                  fontWeight: 700,
-                  letterSpacing: "0.4px",
-                }}
-              >
-                🌱 FOOD RESCUE & UMKM
-              </span>
-              <span style={{ fontSize: 12, fontWeight: 500, opacity: 0.95 }}>
-                Selamatkan Makanan Lezat, Hemat Budget, Dukung UMKM Lokal!
-              </span>
-            </div>
-
-            {/* Right section: Location + Apa itu SecondBit Button */}
-            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 4, opacity: 0.9 }}>
-                <MapPin size={13} />
-                <span>UNESA Ketintang, Surabaya</span>
-              </div>
-              <button
-                type="button"
-                onClick={() => showSecondBitIntroModal(true)}
-                style={{
-                  backgroundColor: "#ffffff",
-                  color: "var(--primary)",
-                  border: "none",
-                  borderRadius: "var(--radius-full)",
-                  padding: "3px 12px",
-                  fontSize: 11,
-                  fontWeight: 700,
-                  cursor: "pointer",
-                  display: "inline-flex",
+                  display: "flex",
                   alignItems: "center",
-                  gap: 4,
-                  boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
-                  transition: "transform 150ms ease",
+                  gap: 8,
+                  minWidth: 0,
+                  flex: 1,
+                  overflow: "hidden",
                 }}
-                onMouseOver={(e) => (e.currentTarget.style.transform = "scale(1.04)")}
-                onMouseOut={(e) => (e.currentTarget.style.transform = "scale(1)")}
-                title="Pelajari apa itu SecondBit"
               >
-                <span>✨</span>
-                <span>Apa itu SecondBit?</span>
-              </button>
+                <span
+                  className="top-bar-badge"
+                  style={{
+                    backgroundColor: "rgba(255,255,255,0.24)",
+                    borderRadius: "var(--radius-full)",
+                    fontWeight: 800,
+                    letterSpacing: "0.4px",
+                    flexShrink: 0,
+                  }}
+                >
+                  🌱 FOOD RESCUE
+                </span>
+
+                {/* Desktop text */}
+                <span
+                  className="top-bar-text-desktop"
+                  style={{
+                    fontSize: 12,
+                    fontWeight: 500,
+                    opacity: 0.95,
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  Selamatkan Makanan Lezat, Hemat Budget, Dukung UMKM Sekitar UNESA Ketintang!
+                </span>
+
+                {/* Mobile text (short & compact) */}
+                <span
+                  className="top-bar-text-mobile"
+                  style={{
+                    fontSize: 11,
+                    fontWeight: 600,
+                    opacity: 0.95,
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                  }}
+                >
+                  Diskon s/d 70% di Ketintang!
+                </span>
+              </div>
+
+              {/* Right actions: Location + Info trigger + Close Button */}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  flexShrink: 0,
+                }}
+              >
+                <div
+                  className="top-bar-location"
+                  style={{
+                    alignItems: "center",
+                    gap: 4,
+                    opacity: 0.9,
+                    fontSize: 11.5,
+                  }}
+                >
+                  <MapPin size={12} />
+                  <span>UNESA Ketintang</span>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => showSecondBitIntroModal(true)}
+                  className="top-bar-btn-info"
+                  style={{
+                    backgroundColor: "#ffffff",
+                    color: "var(--primary)",
+                    border: "none",
+                    borderRadius: "var(--radius-full)",
+                    padding: "2px 10px",
+                    fontSize: 11,
+                    fontWeight: 700,
+                    cursor: "pointer",
+                    alignItems: "center",
+                    gap: 3,
+                    boxShadow: "0 2px 5px rgba(0,0,0,0.15)",
+                    transition: "transform 150ms ease",
+                    whiteSpace: "nowrap",
+                  }}
+                  title="Pelajari apa itu SecondBit"
+                >
+                  <span>✨ Info</span>
+                </button>
+
+                {/* Close Button X */}
+                <button
+                  type="button"
+                  onClick={handleCloseTopBanner}
+                  aria-label="Tutup notifikasi"
+                  title="Tutup notifikasi"
+                  style={{
+                    background: "rgba(0, 0, 0, 0.2)",
+                    border: "none",
+                    color: "#ffffff",
+                    width: 20,
+                    height: 20,
+                    borderRadius: "var(--radius-full)",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer",
+                    padding: 0,
+                    transition: "background 150ms ease, transform 150ms ease",
+                    flexShrink: 0,
+                  }}
+                  onMouseOver={(e) => (e.currentTarget.style.background = "rgba(0,0,0,0.4)")}
+                  onMouseOut={(e) => (e.currentTarget.style.background = "rgba(0,0,0,0.2)")}
+                >
+                  <X size={12} strokeWidth={2.8} />
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* Main Nav */}
         <div className="container">
@@ -537,6 +632,18 @@ export default function Navbar() {
       </header>
 
       <style>{`
+        .top-notification-bar {
+          padding: 6px 0;
+        }
+        .top-bar-badge {
+          padding: 2px 8px;
+          font-size: 11px;
+        }
+        .top-bar-text-desktop { display: inline !important; }
+        .top-bar-text-mobile { display: none !important; }
+        .top-bar-location { display: flex !important; }
+        .top-bar-btn-info { display: inline-flex !important; }
+
         @media (min-width: 640px) {
           .logo-sub-tagline { display: flex !important; }
         }
@@ -549,6 +656,17 @@ export default function Navbar() {
         }
         @media (max-width: 767px) {
           .desktop-only { display: none !important; }
+          .top-notification-bar {
+            padding: 4px 0 !important;
+          }
+          .top-bar-badge {
+            padding: 1px 6px !important;
+            font-size: 9.5px !important;
+          }
+          .top-bar-text-desktop { display: none !important; }
+          .top-bar-text-mobile { display: inline !important; }
+          .top-bar-location { display: none !important; }
+          .top-bar-btn-info { display: none !important; }
         }
       `}</style>
     </>
