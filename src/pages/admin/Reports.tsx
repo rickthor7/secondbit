@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   TrendingUp,
@@ -66,13 +67,43 @@ export default function AdminReports() {
   const max = Math.max(...PLATFORM_WEEKLY.map((day) => day.value));
   const weekTotal = PLATFORM_WEEKLY.reduce((sum, day) => sum + day.value, 0);
 
+  const [activeHoverBar, setActiveHoverBar] = useState<string | null>(null);
+
   const handleDownload = () => {
     Swal.fire({
-      icon: "info",
-      title: "Unduh laporan",
-      text: "Laporan PDF/CSV akan tersedia setelah modul export backend aktif.",
-      confirmButtonText: "Mengerti",
-      confirmButtonColor: "#4C7FD1",
+      title: "Pilih Format Laporan",
+      text: "Unduh ringkasan data analitik dan performa platform:",
+      icon: "question",
+      showCancelButton: true,
+      showDenyButton: true,
+      confirmButtonText: "Unduh CSV",
+      denyButtonText: "Cetak / Simpan PDF",
+      cancelButtonText: "Batal",
+      confirmButtonColor: "var(--primary)",
+      denyButtonColor: "#4C7FD1",
+    }).then((res) => {
+      if (res.isConfirmed) {
+        const csvContent =
+          "Hari,GMV (Rp)\n" +
+          PLATFORM_WEEKLY.map((d) => `"${d.label}",${d.value}`).join("\n");
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", `laporan_platform_${Date.now()}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        Swal.fire({
+          icon: "success",
+          title: "File CSV Berhasil Diunduh!",
+          timer: 1800,
+          confirmButtonColor: "var(--primary)",
+        });
+      } else if (res.isDenied) {
+        window.print();
+      }
     });
   };
 
