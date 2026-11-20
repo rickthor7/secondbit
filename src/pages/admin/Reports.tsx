@@ -69,6 +69,276 @@ export default function AdminReports() {
 
   const [activeHoverBar, setActiveHoverBar] = useState<string | null>(null);
 
+  const generatePdfReport = () => {
+    const printIframe = document.createElement("iframe");
+    printIframe.style.position = "fixed";
+    printIframe.style.right = "0";
+    printIframe.style.bottom = "0";
+    printIframe.style.width = "0";
+    printIframe.style.height = "0";
+    printIframe.style.border = "none";
+    document.body.appendChild(printIframe);
+
+    const doc = printIframe.contentWindow?.document;
+    if (!doc) return;
+
+    const todayDate = new Date().toLocaleDateString("id-ID", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html lang="id">
+      <head>
+        <meta charset="UTF-8">
+        <title>Laporan Analitik Platform - SecondBit</title>
+        <style>
+          * { box-sizing: border-box; }
+          body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            color: #1A1D20;
+            padding: 32px;
+            margin: 0;
+            background: #fff;
+            line-height: 1.5;
+          }
+          .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 2px solid #EE4D2D;
+            padding-bottom: 16px;
+            margin-bottom: 24px;
+          }
+          .brand-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #EE4D2D;
+            letter-spacing: -0.5px;
+          }
+          .brand-subtitle {
+            font-size: 13px;
+            color: #4B5563;
+            margin-top: 2px;
+          }
+          .meta-box {
+            text-align: right;
+            font-size: 12px;
+            color: #4B5563;
+            line-height: 1.6;
+          }
+          h2 {
+            font-size: 15px;
+            font-weight: 700;
+            margin: 22px 0 10px;
+            color: #111827;
+            border-left: 4px solid #EE4D2D;
+            padding-left: 8px;
+          }
+          .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 24px;
+          }
+          .kpi-card {
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            padding: 12px 14px;
+            background: #F9FAFB;
+          }
+          .kpi-label {
+            font-size: 11px;
+            color: #6B7280;
+            font-weight: 600;
+            text-transform: uppercase;
+          }
+          .kpi-value {
+            font-size: 17px;
+            font-weight: 800;
+            color: #111827;
+            margin-top: 4px;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 12.5px;
+          }
+          th, td {
+            border: 1px solid #E5E7EB;
+            padding: 8px 10px;
+            text-align: left;
+          }
+          th {
+            background-color: #F3F4F6;
+            font-weight: 700;
+            color: #374151;
+          }
+          .text-right {
+            text-align: right;
+          }
+          .total-row {
+            font-weight: 700;
+            background-color: #F9FAFB;
+          }
+          .footer {
+            margin-top: 36px;
+            border-top: 1px solid #E5E7EB;
+            padding-top: 12px;
+            font-size: 11px;
+            color: #9CA3AF;
+            display: flex;
+            justify-content: space-between;
+          }
+          @page {
+            size: A4 portrait;
+            margin: 15mm;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <div>
+            <div class="brand-title">🌱 SecondBit Platform</div>
+            <div class="brand-subtitle">Solusi Pengurangan Food Waste & Marketplace UMKM — UNESA Ketintang, Surabaya</div>
+          </div>
+          <div class="meta-box">
+            <div><strong>LAPORAN ANALITIK RESMI</strong></div>
+            <div>Tanggal: ${todayDate}</div>
+            <div>Otoritas: Super Administrator</div>
+          </div>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-label">GMV Platform</div>
+            <div class="kpi-value">Rp 42.500.000</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Komisi Platform (8%)</div>
+            <div class="kpi-value">Rp 3.400.000</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Total Transaksi</div>
+            <div class="kpi-value">127 Pesanan</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Food Rescued</div>
+            <div class="kpi-value">856 Porsi</div>
+          </div>
+        </div>
+
+        <h2>Rincian Tren Penjualan Harian (7 Hari Terakhir)</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Hari</th>
+              <th class="text-right">GMV Harian (Rp)</th>
+              <th class="text-right">Potongan Komisi 8% (Rp)</th>
+              <th class="text-right">Pendapatan Bersih Mitra (Rp)</th>
+              <th class="text-right">Status Settlement</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${PLATFORM_WEEKLY.map(
+              (d) => `
+              <tr>
+                <td><strong>${d.label}</strong></td>
+                <td class="text-right">${formatPrice(d.value)}</td>
+                <td class="text-right">${formatPrice(Math.round(d.value * 0.08))}</td>
+                <td class="text-right">${formatPrice(Math.round(d.value * 0.92))}</td>
+                <td class="text-right" style="color: #059669; font-weight: 600;">Terselesaikan</td>
+              </tr>
+            `
+            ).join("")}
+            <tr class="total-row">
+              <td>Total 7 Hari</td>
+              <td class="text-right">${formatPrice(weekTotal)}</td>
+              <td class="text-right">${formatPrice(Math.round(weekTotal * 0.08))}</td>
+              <td class="text-right">${formatPrice(Math.round(weekTotal * 0.92))}</td>
+              <td class="text-right">100% Closed</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2>Top 5 Mitra UMKM Terlaris</h2>
+        <table>
+          <thead>
+            <tr>
+              <th style="width: 50px;">Rank</th>
+              <th>Nama Mitra UMKM</th>
+              <th>Kategori Makanan</th>
+              <th class="text-right">Rating Pelanggan</th>
+              <th class="text-right">Surplus Terjual</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${topUmkm
+              .map(
+                (u, idx) => `
+              <tr>
+                <td>#${idx + 1}</td>
+                <td><strong>${u.name}</strong></td>
+                <td>${u.category}</td>
+                <td class="text-right">${u.rating} ⭐ (${u.ratingCount})</td>
+                <td class="text-right"><strong>${u.totalSold} porsi</strong></td>
+              </tr>
+            `
+              )
+              .join("")}
+          </tbody>
+        </table>
+
+        <h2>Kontribusi Berdasarkan Kategori Makanan</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Kategori</th>
+              <th class="text-right">Porsi Terjual</th>
+              <th class="text-right">Persentase Kontribusi</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${CATEGORY_BREAKDOWN.map(
+              (c) => `
+              <tr>
+                <td><strong>${c.label}</strong></td>
+                <td class="text-right">${Math.round((856 * c.share) / 100)} porsi</td>
+                <td class="text-right"><strong>${c.share}%</strong></td>
+              </tr>
+            `
+            ).join("")}
+          </tbody>
+        </table>
+
+        <div class="footer">
+          <span>SecondBit Platform — Berdayakan UMKM & Kurangi Pemborosan Pangan</span>
+          <span>Dokumen Resmi Digenerate Secara Otomatis</span>
+        </div>
+      </body>
+      </html>
+    `;
+
+    doc.open();
+    doc.write(htmlContent);
+    doc.close();
+
+    setTimeout(() => {
+      printIframe.contentWindow?.focus();
+      printIframe.contentWindow?.print();
+
+      setTimeout(() => {
+        if (document.body.contains(printIframe)) {
+          document.body.removeChild(printIframe);
+        }
+      }, 4000);
+    }, 300);
+  };
+
   const handleDownload = () => {
     Swal.fire({
       title: "Pilih Format Laporan",
@@ -77,7 +347,7 @@ export default function AdminReports() {
       showCancelButton: true,
       showDenyButton: true,
       confirmButtonText: "Unduh CSV",
-      denyButtonText: "Cetak / Simpan PDF",
+      denyButtonText: "Simpan sebagai PDF",
       cancelButtonText: "Batal",
       confirmButtonColor: "var(--primary)",
       denyButtonColor: "#4C7FD1",
@@ -102,7 +372,7 @@ export default function AdminReports() {
           confirmButtonColor: "var(--primary)",
         });
       } else if (res.isDenied) {
-        window.print();
+        generatePdfReport();
       }
     });
   };
