@@ -102,6 +102,9 @@ function AppShell() {
           <Route path="/admin/transactions" element={withLayout("admin", <AdminModulePage moduleKey="transactions" />)} />
           <Route path="/admin/settlements" element={withLayout("admin", <AdminModulePage moduleKey="settlements" />)} />
           <Route path="/admin/reviews" element={withLayout("admin", <AdminModulePage moduleKey="reviews" />)} />
+
+          {/* Catch-all redirect to home */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
 
