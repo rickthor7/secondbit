@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { Star, MapPin, Clock, Award, ChevronLeft, Navigation, Leaf, Zap } from "lucide-react";
+import { Star, MapPin, Clock, Award, ChevronLeft, Navigation, Leaf, Zap, Flag } from "lucide-react";
 import { getUMKMBySlug, getProductsByUMKM } from "@/data/mockData";
+import { showReportUMKMModal } from "@/utils/showReportUMKMModal";
 import ProductCard from "@/components/shared/ProductCard";
 
 export default function UMKMDetail() {
@@ -160,6 +161,44 @@ export default function UMKMDetail() {
                   <Clock size={15} style={{ color: "var(--muted)", flexShrink: 0 }} />
                   <span>Jam Buka: {umkm.operatingHours}</span>
                 </div>
+              </div>
+
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  flexWrap: "wrap",
+                  gap: 10,
+                  marginTop: 14,
+                  paddingTop: 12,
+                  borderTop: "1px dashed var(--border)",
+                }}
+              >
+                <div style={{ fontSize: 12, color: "var(--muted)" }}>
+                  🛡️ Transaksi terlindungi Standar Higienitas 3T & Garansi 100% Refund
+                </div>
+                <button
+                  type="button"
+                  onClick={() => showReportUMKMModal({ umkmName: umkm.name, umkmId: umkm.id })}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 6,
+                    fontSize: 12,
+                    fontWeight: 600,
+                    color: "var(--muted)",
+                    backgroundColor: "transparent",
+                    border: "none",
+                    cursor: "pointer",
+                    padding: "4px 8px",
+                    borderRadius: "var(--radius-sm)",
+                  }}
+                  title="Laporkan masalah toko ini ke Super Admin"
+                >
+                  <Flag size={13} style={{ color: "var(--destructive)" }} />
+                  <span>Laporkan Toko Ini</span>
+                </button>
               </div>
             </div>
           </div>

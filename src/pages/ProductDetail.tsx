@@ -18,10 +18,12 @@ import {
   Gift,
   AlertCircle,
   HelpCircle,
+  Flag,
 } from "lucide-react";
 import { useState } from "react";
 import Swal from "sweetalert2";
 import { getProductBySlug, getProductsByUMKM, formatPrice, getDiscountPercent, reviews, umkmList } from "@/data/mockData";
+import { showReportUMKMModal } from "@/utils/showReportUMKMModal";
 import ProductCard from "@/components/shared/ProductCard";
 
 export default function ProductDetail() {
@@ -270,6 +272,35 @@ export default function ProductDetail() {
                 <div style={{ fontSize: 12, color: "var(--muted)" }}>{umkm?.address || "Sekitar UNESA Ketintang"} • Lihat toko & menu →</div>
               </div>
             </Link>
+
+            {/* Merchant report link */}
+            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: -14, marginBottom: 16 }}>
+              <button
+                type="button"
+                onClick={() =>
+                  showReportUMKMModal({
+                    umkmName: product.umkmName,
+                    umkmId: product.umkmId,
+                  })
+                }
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 4,
+                  fontSize: 11.5,
+                  fontWeight: 600,
+                  color: "var(--muted)",
+                  background: "transparent",
+                  border: "none",
+                  cursor: "pointer",
+                  padding: "2px 6px",
+                }}
+                title="Laporkan toko atau produk ini ke Super Admin"
+              >
+                <Flag size={11} style={{ color: "var(--destructive)" }} />
+                <span>Laporkan Masalah Toko</span>
+              </button>
+            </div>
 
             {/* Description */}
             <div style={{ marginBottom: 20 }}>

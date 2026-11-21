@@ -8,12 +8,14 @@ import {
   ChevronRight,
   QrCode,
   RotateCcw,
+  Flag,
 } from "lucide-react";
 import PageHeader from "@/components/dashboard/PageHeader";
 import StatCard from "@/components/dashboard/StatCard";
 import Panel from "@/components/dashboard/Panel";
 import StatusPill, { type PillTone } from "@/components/dashboard/StatusPill";
 import { orders, formatPrice } from "@/data/mockData";
+import { showReportUMKMModal } from "@/utils/showReportUMKMModal";
 import type { OrderStatus } from "@/types";
 
 const STATUS_META: Record<OrderStatus, { label: string; tone: PillTone }> = {
@@ -216,20 +218,73 @@ export default function BuyerOrders() {
                           <QrCode size={14} /> QR Pickup
                         </Link>
                       ) : order.status === "completed" ? (
-                        <Link
-                          to="/explore"
-                          className="btn"
-                          style={{
-                            backgroundColor: "var(--surface)",
-                            color: "var(--foreground)",
-                            fontSize: 12,
-                            padding: "8px 12px",
-                          }}
-                        >
-                          <RotateCcw size={14} /> Beli Lagi
-                        </Link>
+                        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                          <button
+                            type="button"
+                            onClick={() =>
+                              showReportUMKMModal({
+                                umkmName: order.umkmName,
+                                orderNumber: order.orderNumber,
+                              })
+                            }
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: 4,
+                              fontSize: 11.5,
+                              fontWeight: 600,
+                              color: "var(--muted)",
+                              border: "1px solid var(--border)",
+                              backgroundColor: "var(--surface)",
+                              borderRadius: "var(--radius-md)",
+                              padding: "7px 10px",
+                              cursor: "pointer",
+                            }}
+                            title="Laporkan masalah kualitas atau pelayanan"
+                          >
+                            <Flag size={12} style={{ color: "var(--destructive)" }} />
+                            Laporkan
+                          </button>
+                          <Link
+                            to="/explore"
+                            className="btn"
+                            style={{
+                              backgroundColor: "var(--surface)",
+                              color: "var(--foreground)",
+                              fontSize: 12,
+                              padding: "8px 12px",
+                            }}
+                          >
+                            <RotateCcw size={14} /> Beli Lagi
+                          </Link>
+                        </div>
                       ) : (
-                        <ChevronRight size={18} style={{ color: "var(--muted-light)" }} />
+                        <button
+                          type="button"
+                          onClick={() =>
+                            showReportUMKMModal({
+                              umkmName: order.umkmName,
+                              orderNumber: order.orderNumber,
+                            })
+                          }
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 4,
+                            fontSize: 11.5,
+                            fontWeight: 600,
+                            color: "var(--muted)",
+                            border: "1px solid var(--border)",
+                            backgroundColor: "var(--surface)",
+                            borderRadius: "var(--radius-md)",
+                            padding: "7px 10px",
+                            cursor: "pointer",
+                          }}
+                          title="Laporkan masalah dengan pesanan ini"
+                        >
+                          <Flag size={12} style={{ color: "var(--destructive)" }} />
+                          Laporkan
+                        </button>
                       )}
                     </div>
                   </div>

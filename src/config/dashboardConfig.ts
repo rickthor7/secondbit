@@ -17,6 +17,7 @@ import {
   Wallet,
   Zap,
   ShieldCheck,
+  AlertTriangle,
   type LucideIcon,
 } from "lucide-react";
 
@@ -239,6 +240,7 @@ export const dashboardConfig: Record<DashboardRole, DashboardRoleConfig> = {
         items: [
           { id: "admin-users", label: "Kelola Pembeli", icon: Users, target: "/admin/users" },
           { id: "admin-umkm", label: "Kelola UMKM", icon: Store, target: "/admin/umkm" },
+          { id: "admin-umkm-reports", label: "Pelaporan UMKM", icon: AlertTriangle, target: "/admin/reports-umkm" },
           { id: "admin-products", label: "Kelola Produk", icon: Package, target: "/admin/products" },
           { id: "admin-sop", label: "Audit SOP & Risiko", icon: ShieldCheck, target: "/seller/sop-risk" },
           { id: "admin-transactions", label: "Kelola Transaksi", icon: ShoppingBag, target: "/admin/transactions" },

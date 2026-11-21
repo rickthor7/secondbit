@@ -40,6 +40,7 @@ import SOPAndRiskMitigation from "@/pages/seller/SOPAndRiskMitigation";
 import AdminDashboard from "@/pages/admin/Dashboard";
 import AdminActivity from "@/pages/admin/Activity";
 import AdminReports from "@/pages/admin/Reports";
+import AdminUMKMReports from "@/pages/admin/UMKMReports";
 import AdminModulePage from "@/pages/admin/ModulePage";
 
 function withLayout(role: DashboardRole, page: ReactNode) {
@@ -98,6 +99,7 @@ function AppShell() {
           <Route path="/admin/dashboard" element={<Navigate to="/admin" replace />} />
           <Route path="/admin/activity" element={withLayout("admin", <AdminActivity />)} />
           <Route path="/admin/reports" element={withLayout("admin", <AdminReports />)} />
+          <Route path="/admin/reports-umkm" element={withLayout("admin", <AdminUMKMReports />)} />
           <Route path="/admin/users" element={withLayout("admin", <AdminModulePage moduleKey="users" />)} />
           <Route path="/admin/umkm" element={withLayout("admin", <AdminModulePage moduleKey="umkm" />)} />
           <Route path="/admin/products" element={withLayout("admin", <AdminModulePage moduleKey="products" />)} />
