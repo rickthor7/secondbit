@@ -2,17 +2,114 @@ import type { DailySalesPoint, HourlyTrafficPoint, Product } from "@/types";
 import { formatPrice } from "@/data/mockData";
 
 /**
- * Mesin analisis penjualan untuk dashboard UMKM.
- *
- * Saat ini berjalan sepenuhnya di sisi klien memakai data 7 hari terakhir
- * (deterministik, tanpa panggilan jaringan). Ketika backend sudah tersedia,
- * cukup ganti pemanggilan `analyzeSales` dengan respons API dan UI tidak
- * perlu diubah.
+ * Mesin analisis penjualan & simulasi AI untuk dashboard UMKM.
+ * Dilengkapi faktor eksternal kawasan kampus (Kalender Akademik UNESA & Cuaca Surabaya).
  */
 
 export type InsightTone = "positive" | "warning" | "neutral";
 export type InsightIcon = "trend" | "cart" | "clock" | "package" | "leaf";
 export type SurplusRisk = "rendah" | "sedang" | "tinggi";
+
+export type AcademicSeason = "regular" | "exam" | "graduation" | "vacation";
+export type WeatherType = "sunny" | "heavy_rain" | "extreme_heat" | "cloudy";
+
+export interface AcademicCalendarConfig {
+  season: AcademicSeason;
+  label: string;
+  badge: string;
+  campus: string;
+  trafficMultiplier: number;
+  surplusRiskMultiplier: number;
+  description: string;
+}
+
+export interface WeatherConfig {
+  type: WeatherType;
+  label: string;
+  icon: string;
+  temp: string;
+  trafficMultiplier: number;
+  surplusRiskMultiplier: number;
+  description: string;
+}
+
+export const ACADEMIC_SEASONS: Record<AcademicSeason, AcademicCalendarConfig> = {
+  regular: {
+    season: "regular",
+    label: "Kuliah Reguler (Senin - Kamis)",
+    badge: "Traffic Normal",
+    campus: "UNESA Ketintang",
+    trafficMultiplier: 1.0,
+    surplusRiskMultiplier: 1.0,
+    description: "Jadwal kuliah tatap muka normal. Puncak keramaian stabil di jam 11.30 - 13.30.",
+  },
+  exam: {
+    season: "exam",
+    label: "Pekan Ujian (UTS / UAS Kampus)",
+    badge: "Aktivitas Malam (+25%)",
+    campus: "UNESA Ketintang",
+    trafficMultiplier: 1.25,
+    surplusRiskMultiplier: 0.65,
+    description: "Mahasiswa belajar di sekitar kampus hingga sore & malam. Permintaan makan dan camilan meningkat tajam.",
+  },
+  graduation: {
+    season: "graduation",
+    label: "Musim Wisuda & PKKMB UNESA",
+    badge: "Lonjakan Tertinggi (+50%)",
+    campus: "UNESA Ketintang",
+    trafficMultiplier: 1.5,
+    surplusRiskMultiplier: 0.35,
+    description: "Ribuan wisudawan & keluarga memadati area kampus. Demand makan siang meledak drastis.",
+  },
+  vacation: {
+    season: "vacation",
+    label: "Libur Semester / Akhir Pekan",
+    badge: "Kampus Lengang (-50%)",
+    campus: "UNESA Ketintang",
+    trafficMultiplier: 0.52,
+    surplusRiskMultiplier: 2.2,
+    description: "Mayoritas mahasiswa kos pulang kampung. Traffic anjlok drastis, risiko makanan berlebih sangat tinggi.",
+  },
+};
+
+export const WEATHER_CONDITIONS: Record<WeatherType, WeatherConfig> = {
+  sunny: {
+    type: "sunny",
+    label: "Cerah Bersahabat",
+    icon: "☀️",
+    temp: "31°C",
+    trafficMultiplier: 1.0,
+    surplusRiskMultiplier: 1.0,
+    description: "Cuaca cerah, pejalan kaki dan mahasiswa leluasa membeli makanan langsung di warung.",
+  },
+  heavy_rain: {
+    type: "heavy_rain",
+    label: "Hujan Deras / Badai Sore",
+    icon: "⛈️",
+    temp: "26°C",
+    trafficMultiplier: 0.72,
+    surplusRiskMultiplier: 1.85,
+    description: "Mahasiswa tertahan di gedung/kos. Dine-in turun drastis, risiko sisa makanan dingin melonjak.",
+  },
+  extreme_heat: {
+    type: "extreme_heat",
+    label: "Panas Terik Surabaya",
+    icon: "🌡️",
+    temp: "35°C",
+    trafficMultiplier: 0.94,
+    surplusRiskMultiplier: 1.15,
+    description: "Suhu Surabaya panas menyengat. Minuman & es melonjak +50%, jam makan berat bergeser menjelang sore.",
+  },
+  cloudy: {
+    type: "cloudy",
+    label: "Mendung & Gerimis Sore",
+    icon: "⛅",
+    temp: "28°C",
+    trafficMultiplier: 0.88,
+    surplusRiskMultiplier: 1.3,
+    description: "Cuaca mendung membuat mahasiswa cenderung makan di tempat terdekat atau takeaway lebih awal.",
+  },
+};
 
 export interface SalesInsight {
   id: string;
@@ -33,7 +130,6 @@ export interface ProductPerformance {
 
 export interface SalesAnalysis {
   generatedAt: Date;
-  /** Tingkat keyakinan model terhadap data historis yang tersedia (0-100). */
   confidence: number;
   totals: {
     revenue: number;
@@ -55,12 +151,26 @@ export interface SalesAnalysis {
   topProducts: ProductPerformance[];
   stockHeavyProduct?: ProductPerformance;
   insights: SalesInsight[];
+  // Simulasi Faktor Eksternal Lingkungan
+  factors: {
+    academic: AcademicSeason;
+    weather: WeatherType;
+    academicConfig: AcademicCalendarConfig;
+    weatherConfig: WeatherConfig;
+    combinedDemandMultiplier: number;
+    combinedSurplusMultiplier: number;
+    simulationNote: string;
+  };
 }
 
 interface AnalyzeParams {
   daily: DailySalesPoint[];
   hourly: HourlyTrafficPoint[];
   products: Product[];
+  factors?: {
+    academic?: AcademicSeason;
+    weather?: WeatherType;
+  };
 }
 
 function clamp(value: number, min: number, max: number): number {
@@ -92,7 +202,6 @@ function buildPeakWindow(hourly: HourlyTrafficPoint[]): { start: string; end: st
 
   const totalOrders = hourly.reduce((sum, point) => sum + point.orders, 0);
 
-  // Cari jendela 2 jam berurutan dengan pesanan terbanyak, bukan hanya jam puncak tunggal.
   let bestStart = 0;
   let bestSum = -1;
 
@@ -136,7 +245,13 @@ function toPerformance(product: Product): ProductPerformance {
   };
 }
 
-export function analyzeSales({ daily, hourly, products }: AnalyzeParams): SalesAnalysis {
+export function analyzeSales({ daily, hourly, products, factors }: AnalyzeParams): SalesAnalysis {
+  const academicConfig = ACADEMIC_SEASONS[factors?.academic || "regular"];
+  const weatherConfig = WEATHER_CONDITIONS[factors?.weather || "heavy_rain"];
+
+  const combinedMultiplier = academicConfig.trafficMultiplier * weatherConfig.trafficMultiplier;
+  const combinedSurplusMultiplier = academicConfig.surplusRiskMultiplier * weatherConfig.surplusRiskMultiplier;
+
   const totals = daily.reduce(
     (acc, day) => ({
       revenue: acc.revenue + day.revenue,
@@ -164,7 +279,7 @@ export function analyzeSales({ daily, hourly, products }: AnalyzeParams): SalesA
     daily[0]
   );
 
-  // Prediksi omzet: weighted moving average 3 hari terakhir + momentum harian.
+  // Prediksi omzet dasar: weighted moving average 3 hari terakhir + momentum harian
   const recent = daily.slice(-3);
   const weights = [0.5, 0.3, 0.2];
   const weightOf = (index: number) => weights[recent.length - 1 - index] ?? 0;
@@ -172,14 +287,23 @@ export function analyzeSales({ daily, hourly, products }: AnalyzeParams): SalesA
   const weightedSum = recent.reduce((sum, day, index) => sum + day.revenue * weightOf(index), 0);
   const weightedAverage = weightSum === 0 ? 0 : weightedSum / weightSum;
   const momentum = clamp((growth.revenue / 100) * 0.4, -0.08, 0.08);
-  const forecastRevenue = roundTo(weightedAverage * (1 + momentum), 5000);
+  const baseForecastRevenue = weightedAverage * (1 + momentum);
 
-  const recentSurplus = average(daily.slice(-3).map((day) => day.surplus));
-  const forecastSurplus = Math.max(Math.round(recentSurplus), 0);
+  // Penyesuaian simulasi faktor cuaca & kalender akademik kampus
+  const forecastRevenue = roundTo(baseForecastRevenue * combinedMultiplier, 5000);
+
+  const baseSurplus = average(daily.slice(-3).map((day) => day.surplus));
+  const forecastSurplus = Math.max(Math.round(baseSurplus * combinedSurplusMultiplier), 0);
 
   const surplusRatio = totals.portions === 0 ? 0 : (totals.surplus / totals.portions) * 100;
+  const simulatedRatio = surplusRatio * combinedSurplusMultiplier;
+
   const surplusRisk: SurplusRisk =
-    surplusRatio < 15 ? "rendah" : surplusRatio <= 25 ? "sedang" : "tinggi";
+    forecastSurplus >= 8 || simulatedRatio > 24
+      ? "tinggi"
+      : forecastSurplus >= 4 || simulatedRatio >= 14
+      ? "sedang"
+      : "rendah";
 
   const sortedBySold = [...products].sort((a, b) => b.soldCount - a.soldCount);
   const topProducts = sortedBySold.slice(0, 3).map(toPerformance);
@@ -193,6 +317,39 @@ export function analyzeSales({ daily, hourly, products }: AnalyzeParams): SalesA
   const confidence = buildConfidence(daily);
 
   const insights: SalesInsight[] = [];
+
+  // Insight 1: Dampak Simulasi Faktor Eksternal (Kalender Kampus & Cuaca Surabaya)
+  let simulationTitle = "";
+  let simulationDetail = "";
+  let simulationTone: InsightTone = "neutral";
+
+  if (academicConfig.season === "vacation" || weatherConfig.type === "heavy_rain") {
+    simulationTone = "warning";
+    const dropPct = Math.max(Math.round((1 - combinedMultiplier) * 100), 5);
+    simulationTitle = `⚠️ Peringatan Faktor: ${academicConfig.label} & ${weatherConfig.label}`;
+    simulationDetail = `Kombinasi cuaca ${weatherConfig.label} (${weatherConfig.icon}) dan kalender ${academicConfig.campus} diperkirakan menekan traffic pelanggan hingga -${dropPct}%. Risiko surplus membengkak ke ${forecastSurplus} porsi. Disarankan kurangi kuota masak lauk 20-30% atau pasang Surplus Bundle lebih awal.`;
+  } else if (academicConfig.season === "graduation" || academicConfig.season === "exam") {
+    simulationTone = "positive";
+    const surgePct = Math.round((combinedMultiplier - 1) * 100);
+    simulationTitle = `🔥 Lonjakan Permintaan: ${academicConfig.label} (+${surgePct}% Demand)`;
+    simulationDetail = `Area ${academicConfig.campus} dipadati mahasiswa/wisudawan. Tingkatkan porsi masak menu utama sebesar +${Math.round(surgePct * 0.8)}%. Peluang surplus sangat minim (${forecastSurplus} porsi). Maksimalkan stok di jam 11.00–14.00.`;
+  } else if (weatherConfig.type === "extreme_heat") {
+    simulationTone = "neutral";
+    simulationTitle = `🌡️ Cuaca Panas Surabaya (${weatherConfig.temp}): Minuman Melonjak!`;
+    simulationDetail = `Suhu tinggi Ketintang mendorong peningkatan penjualan es & minuman hingga +50%. Sediakan stok es teh/es jeruk lebih banyak dan tawarkan paket combo minum untuk menaikkan rata-rata belanja.`;
+  } else {
+    simulationTone = "positive";
+    simulationTitle = `☀️ Kondisi Stabil: ${academicConfig.label} & Cuaca Cerah`;
+    simulationDetail = `Aktivitas di sekitar UNESA Ketintang berlangsung optimal. Pertahankan produksi normal ${today.portions} porsi dan jalankan penyelamatan surplus terjadwal pada pukul 16.30.`;
+  }
+
+  insights.push({
+    id: "simulation-factor",
+    tone: simulationTone,
+    icon: "trend",
+    title: simulationTitle,
+    detail: simulationDetail,
+  });
 
   insights.push({
     id: "revenue",
@@ -241,9 +398,9 @@ export function analyzeSales({ daily, hourly, products }: AnalyzeParams): SalesA
     tone: surplusRisk === "tinggi" ? "warning" : "neutral",
     icon: "leaf",
     title: `Prediksi surplus besok ${forecastSurplus} porsi (risiko ${surplusRisk})`,
-    detail: `Rasio surplus 7 hari terakhir ${Math.round(surplusRatio)}%. Aktifkan Surplus Rescue mulai pukul 15.00 — potensi modal terselamatkan ±${formatPrice(
+    detail: `Tingkat risiko surplus ${surplusRisk.toUpperCase()} berdasarkan faktor kalender & cuaca. Potensi modal tertahan ±${formatPrice(
       potentialRescueValue
-    )}.`,
+    )}. Gunakan fitur Surplus Rescue & Bundling agar modal tetap berputar.`,
   });
 
   return {
@@ -269,5 +426,14 @@ export function analyzeSales({ daily, hourly, products }: AnalyzeParams): SalesA
     topProducts,
     stockHeavyProduct: stockHeavy ? toPerformance(stockHeavy) : undefined,
     insights,
+    factors: {
+      academic: academicConfig.season,
+      weather: weatherConfig.type,
+      academicConfig,
+      weatherConfig,
+      combinedDemandMultiplier: combinedMultiplier,
+      combinedSurplusMultiplier,
+      simulationNote: simulationDetail,
+    },
   };
 }

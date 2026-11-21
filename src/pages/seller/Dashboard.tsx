@@ -12,6 +12,7 @@ import {
   Leaf,
 } from "lucide-react";
 import { formatPrice, sellerOrders, sellerSalesHistory } from "@/data/mockData";
+import QuickDailyHabitLog from "@/components/seller/QuickDailyHabitLog";
 import AISalesInsight from "@/components/seller/AISalesInsight";
 import RevenueTrendChart from "@/components/seller/RevenueTrendChart";
 import StatusPill from "@/components/dashboard/StatusPill";
@@ -100,14 +101,19 @@ export default function SellerDashboard() {
           ))}
         </div>
 
+        {/* Pembiasaan UMKM Input Ringan 30 Detik */}
+        <div id="seller-daily-habit" className="dash-section">
+          <QuickDailyHabitLog />
+        </div>
+
+        {/* AI Sales Analysis dengan Kalender Akademik & Cuaca */}
+        <div id="seller-ai" className="dash-section">
+          <AISalesInsight umkmId="u1" />
+        </div>
+
         {/* Tren omzet interaktif */}
         <div id="seller-trend" className="dash-section" style={{ marginBottom: 24 }}>
           <RevenueTrendChart data={sellerSalesHistory} />
-        </div>
-
-        {/* AI Sales Analysis */}
-        <div id="seller-ai" className="dash-section">
-          <AISalesInsight umkmId="u1" />
         </div>
 
         {/* Quick Actions */}

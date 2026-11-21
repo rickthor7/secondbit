@@ -11,6 +11,11 @@ import {
   ChevronDown,
   ChevronUp,
   ShieldCheck,
+  Calendar,
+  CloudRain,
+  Sun,
+  GraduationCap,
+  AlertTriangle,
   type LucideIcon,
 } from "lucide-react";
 import {
@@ -21,6 +26,10 @@ import {
 } from "@/data/mockData";
 import {
   analyzeSales,
+  ACADEMIC_SEASONS,
+  WEATHER_CONDITIONS,
+  type AcademicSeason,
+  type WeatherType,
   type InsightIcon,
   type InsightTone,
   type SalesAnalysis,
@@ -70,24 +79,34 @@ export default function AISalesInsight({ umkmId, defaultExpanded = false }: AISa
   const [now, setNow] = useState(() => Date.now());
   const timerRef = useRef<number | null>(null);
 
-  const runAnalysis = useCallback(() => {
-    if (timerRef.current !== null) window.clearTimeout(timerRef.current);
+  // Simulasi Faktor Eksternal Kampus
+  const [academicSeason, setAcademicSeason] = useState<AcademicSeason>("regular");
+  const [weatherType, setWeatherType] = useState<WeatherType>("heavy_rain");
 
-    setLoading(true);
-    // Jeda singkat agar transisi ke state hasil terasa jelas bagi pengguna.
-    timerRef.current = window.setTimeout(() => {
-      setAnalysis(
-        analyzeSales({
-          daily: sellerWeeklySales,
-          hourly: sellerHourlyTraffic,
-          products: getProductsByUMKM(umkmId),
-        })
-      );
-      setLoading(false);
-      setNow(Date.now());
-      timerRef.current = null;
-    }, 850);
-  }, [umkmId]);
+  const runAnalysis = useCallback(
+    (academic: AcademicSeason = academicSeason, weather: WeatherType = weatherType) => {
+      if (timerRef.current !== null) window.clearTimeout(timerRef.current);
+
+      setLoading(true);
+      timerRef.current = window.setTimeout(() => {
+        setAnalysis(
+          analyzeSales({
+            daily: sellerWeeklySales,
+            hourly: sellerHourlyTraffic,
+            products: getProductsByUMKM(umkmId),
+            factors: {
+              academic,
+              weather,
+            },
+          })
+        );
+        setLoading(false);
+        setNow(Date.now());
+        timerRef.current = null;
+      }, 500);
+    },
+    [umkmId, academicSeason, weatherType]
+  );
 
   useEffect(() => {
     runAnalysis();
@@ -96,11 +115,20 @@ export default function AISalesInsight({ umkmId, defaultExpanded = false }: AISa
     };
   }, [runAnalysis]);
 
-  // Menjaga label "x menit lalu" tetap akurat tanpa perlu refresh manual.
   useEffect(() => {
     const interval = window.setInterval(() => setNow(Date.now()), 30000);
     return () => window.clearInterval(interval);
   }, []);
+
+  const handleAcademicChange = (newSeason: AcademicSeason) => {
+    setAcademicSeason(newSeason);
+    runAnalysis(newSeason, weatherType);
+  };
+
+  const handleWeatherChange = (newWeather: WeatherType) => {
+    setWeatherType(newWeather);
+    runAnalysis(academicSeason, newWeather);
+  };
 
   const renderInsight = (insight: SalesInsight) => {
     const tone = TONES[insight.tone];
@@ -147,6 +175,9 @@ export default function AISalesInsight({ umkmId, defaultExpanded = false }: AISa
     );
   };
 
+  const academicConfig = ACADEMIC_SEASONS[academicSeason];
+  const weatherConfig = WEATHER_CONDITIONS[weatherType];
+
   return (
     <section
       style={{
@@ -167,7 +198,7 @@ export default function AISalesInsight({ umkmId, defaultExpanded = false }: AISa
           flexWrap: "wrap",
           padding: "16px 20px",
           background:
-            "linear-gradient(135deg, rgba(109, 90, 230, 0.10) 0%, rgba(109, 90, 230, 0.02) 70%)",
+            "linear-gradient(135deg, rgba(109, 90, 230, 0.12) 0%, rgba(109, 90, 230, 0.02) 70%)",
           borderBottom: "1px solid var(--border-light)",
         }}
       >
@@ -190,7 +221,7 @@ export default function AISalesInsight({ umkmId, defaultExpanded = false }: AISa
         <div style={{ flex: 1, minWidth: 180 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
             <h3 style={{ fontSize: 15, fontWeight: 700, color: "var(--foreground)", margin: 0 }}>
-              Analisis Penjualan AI
+              Simulasi AI Penjualan & Prediksi Stok
             </h3>
             <span
               style={{
@@ -203,19 +234,19 @@ export default function AISalesInsight({ umkmId, defaultExpanded = false }: AISa
                 color: "#6D5AE6",
               }}
             >
-              BETA
+              FAKTOR KAMPUS + CUACA
             </span>
           </div>
           <p style={{ fontSize: 12, color: "var(--muted)", margin: "3px 0 0" }}>
             {loading || !analysis
-              ? "Menganalisis 7 hari transaksi terakhir…"
-              : `7 hari terakhir • diperbarui ${formatRelativeTime(analysis.generatedAt, now)}`}
+              ? "Menghitung proyeksi stok & risiko surplus…"
+              : `Model prediktif kawasan UNESA Ketintang • diperbarui ${formatRelativeTime(analysis.generatedAt, now)}`}
           </p>
         </div>
 
         <button
           type="button"
-          onClick={runAnalysis}
+          onClick={() => runAnalysis()}
           disabled={loading}
           aria-label="Analisis ulang penjualan"
           className="btn btn-sm btn-outline"
@@ -229,11 +260,155 @@ export default function AISalesInsight({ umkmId, defaultExpanded = false }: AISa
           }}
         >
           <RefreshCw size={14} className={loading ? "spin" : undefined} />
-          <span>{loading ? "Menganalisis" : "Analisis ulang"}</span>
+          <span>{loading ? "Menghitung…" : "Simulasi Ulang"}</span>
         </button>
       </div>
 
       <div style={{ padding: "18px 20px 20px" }} aria-live="polite">
+        {/* Simulator Factors Controls */}
+        <div
+          style={{
+            backgroundColor: "var(--surface-sunken)",
+            borderRadius: "var(--radius-lg)",
+            border: "1px solid var(--border)",
+            padding: "14px 16px",
+            marginBottom: 16,
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+              gap: 8,
+              marginBottom: 12,
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <GraduationCap size={16} style={{ color: "#7C5CFF" }} />
+              <span style={{ fontSize: 13, fontWeight: 700, color: "var(--foreground)" }}>
+                Simulasi Faktor Eksternal Kampus (Ubah Faktor untuk Uji AI):
+              </span>
+            </div>
+            <span style={{ fontSize: 11, color: "var(--muted)", fontWeight: 500 }}>
+              📍 Kawasan UNESA Ketintang, Surabaya
+            </span>
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+              gap: 12,
+            }}
+          >
+            {/* Faktor 1: Kalender Akademik */}
+            <div>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11.5, fontWeight: 600, color: "var(--muted)", marginBottom: 6 }}>
+                <Calendar size={13} />
+                1. Kalender Akademik Kampus:
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                {(Object.keys(ACADEMIC_SEASONS) as AcademicSeason[]).map((seasonKey) => {
+                  const cfg = ACADEMIC_SEASONS[seasonKey];
+                  const active = academicSeason === seasonKey;
+                  return (
+                    <button
+                      key={seasonKey}
+                      type="button"
+                      onClick={() => handleAcademicChange(seasonKey)}
+                      style={{
+                        padding: "5px 10px",
+                        borderRadius: "var(--radius-md)",
+                        border: active ? "1.5px solid #7C5CFF" : "1px solid var(--border)",
+                        backgroundColor: active ? "rgba(124, 92, 255, 0.12)" : "var(--surface)",
+                        color: active ? "#7C5CFF" : "var(--foreground)",
+                        fontSize: 11,
+                        fontWeight: active ? 700 : 500,
+                        cursor: "pointer",
+                        transition: "all 0.15s ease",
+                      }}
+                    >
+                      {cfg.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Faktor 2: Cuaca */}
+            <div>
+              <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11.5, fontWeight: 600, color: "var(--muted)", marginBottom: 6 }}>
+                <CloudRain size={13} />
+                2. Prakiraan Cuaca Surabaya:
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                {(Object.keys(WEATHER_CONDITIONS) as WeatherType[]).map((wKey) => {
+                  const cfg = WEATHER_CONDITIONS[wKey];
+                  const active = weatherType === wKey;
+                  return (
+                    <button
+                      key={wKey}
+                      type="button"
+                      onClick={() => handleWeatherChange(wKey)}
+                      style={{
+                        padding: "5px 10px",
+                        borderRadius: "var(--radius-md)",
+                        border: active ? "1.5px solid #EE4D2D" : "1px solid var(--border)",
+                        backgroundColor: active ? "rgba(238, 77, 45, 0.1)" : "var(--surface)",
+                        color: active ? "#EE4D2D" : "var(--foreground)",
+                        fontSize: 11,
+                        fontWeight: active ? 700 : 500,
+                        cursor: "pointer",
+                        transition: "all 0.15s ease",
+                      }}
+                    >
+                      {cfg.icon} {cfg.label} ({cfg.temp})
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* Current Impact Summary Pill */}
+          {analysis && (
+            <div
+              style={{
+                marginTop: 10,
+                paddingTop: 8,
+                borderTop: "1px dashed var(--border-light)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                flexWrap: "wrap",
+                gap: 8,
+                fontSize: 11.5,
+              }}
+            >
+              <span style={{ color: "var(--muted)" }}>
+                ⚙️ <strong>Pengali Dampak AI:</strong> Traffic {(analysis.factors.combinedDemandMultiplier * 100).toFixed(0)}% • Risiko Surplus x{analysis.factors.combinedSurplusMultiplier.toFixed(1)}
+              </span>
+              <span
+                style={{
+                  fontWeight: 700,
+                  color:
+                    analysis.factors.combinedDemandMultiplier >= 1.2
+                      ? "var(--success)"
+                      : analysis.factors.combinedDemandMultiplier <= 0.75
+                      ? "var(--destructive)"
+                      : "var(--primary)",
+                }}
+              >
+                {analysis.factors.combinedDemandMultiplier >= 1
+                  ? `+${Math.round((analysis.factors.combinedDemandMultiplier - 1) * 100)}% Potensi Lonjakan`
+                  : `-${Math.round((1 - analysis.factors.combinedDemandMultiplier) * 100)}% Penurunan Traffic Mahasiswa`}
+              </span>
+            </div>
+          )}
+        </div>
+
         {loading || !analysis ? (
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: 10 }}>
@@ -247,7 +422,7 @@ export default function AISalesInsight({ umkmId, defaultExpanded = false }: AISa
           </div>
         ) : (
           <>
-            {/* Ringkasan metrik */}
+            {/* Ringkasan metrik prediksi dengan faktor eksternal */}
             <div
               style={{
                 display: "grid",
@@ -258,21 +433,21 @@ export default function AISalesInsight({ umkmId, defaultExpanded = false }: AISa
             >
               {[
                 {
-                  label: "Omzet 7 Hari",
+                  label: "Omzet Historis 7 Hari",
                   value: formatPrice(analysis.totals.revenue),
                   sub: `Rata-rata ${formatPrice(analysis.totals.avgDailyRevenue)}/hari`,
                   valueColor: "var(--foreground)",
                 },
                 {
-                  label: "Prediksi Besok",
+                  label: "Prediksi Omzet Besok",
                   value: formatPrice(analysis.forecast.revenue),
-                  sub: `Keyakinan ${analysis.confidence}%`,
-                  valueColor: "var(--foreground)",
+                  sub: `Tersimulasi Kalender & Cuaca`,
+                  valueColor: "var(--primary)",
                 },
                 {
-                  label: "Risiko Surplus",
-                  value: analysis.surplusRisk.toUpperCase(),
-                  sub: `${analysis.forecast.surplus} porsi diprediksi`,
+                  label: "Prediksi Surplus Besok",
+                  value: `${analysis.forecast.surplus} Porsi`,
+                  sub: `Risiko: ${analysis.surplusRisk.toUpperCase()}`,
                   valueColor: RISK_COLOR[analysis.surplusRisk],
                 },
               ].map((metric) => (
@@ -295,7 +470,7 @@ export default function AISalesInsight({ umkmId, defaultExpanded = false }: AISa
               ))}
             </div>
 
-            {/* Insight utama */}
+            {/* Insight utama (termasuk rekomendasi simulasi) */}
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {analysis.insights.slice(0, 3).map(renderInsight)}
             </div>
@@ -327,7 +502,7 @@ export default function AISalesInsight({ umkmId, defaultExpanded = false }: AISa
                   <div>
                     <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 10 }}>
                       <Clock size={14} style={{ verticalAlign: "middle", marginRight: 6, color: "var(--muted)" }} />
-                      Jam Tersibuk
+                      Jam Tersibuk Toko
                     </div>
                     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                       {[...sellerHourlyTraffic]
@@ -378,7 +553,7 @@ export default function AISalesInsight({ umkmId, defaultExpanded = false }: AISa
                   <div>
                     <div style={{ fontSize: 13, fontWeight: 600, color: "var(--foreground)", marginBottom: 10 }}>
                       <Package size={14} style={{ verticalAlign: "middle", marginRight: 6, color: "var(--muted)" }} />
-                      Produk Terlaris
+                      Menu Terlaris & Rekomendasi Stok
                     </div>
                     <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                       {analysis.topProducts.map((product, index) => {
@@ -451,7 +626,7 @@ export default function AISalesInsight({ umkmId, defaultExpanded = false }: AISa
                 }}
               >
                 <ShieldCheck size={13} style={{ color: "var(--success)" }} />
-                Dihitung dari {sellerWeeklySales.length} hari data transaksi toko
+                Dihitung dari {sellerWeeklySales.length} hari historis + kalender akademik UNESA & cuaca Surabaya
               </span>
 
               <button
