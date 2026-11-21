@@ -10,6 +10,7 @@ import {
   ShoppingBag,
   ChevronRight,
   Leaf,
+  ShieldCheck,
 } from "lucide-react";
 import { formatPrice, sellerOrders, sellerSalesHistory } from "@/data/mockData";
 import QuickDailyHabitLog from "@/components/seller/QuickDailyHabitLog";
@@ -130,13 +131,14 @@ export default function SellerDashboard() {
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(4, minmax(0, 1fr))",
+              gridTemplateColumns: "repeat(auto-fit, minmax(110px, 1fr))",
               gap: 12,
             }}
           >
             {[
               { icon: Plus, label: "Tambah Produk", path: "/seller/products", color: "var(--primary)" },
               { icon: Leaf, label: "Tambah Surplus", path: "/seller/surplus", color: "var(--success)" },
+              { icon: ShieldCheck, label: "SOP & Risiko", path: "/seller/sop-risk", color: "#6366F1" },
               { icon: QrCode, label: "Scanner QR", path: "/seller/scanner", color: "var(--info)" },
               { icon: BarChart3, label: "Analisis", path: "/seller/analytics", color: "var(--warning)" },
             ].map(({ icon: Icon, label, path, color }) => (

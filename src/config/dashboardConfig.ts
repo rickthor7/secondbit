@@ -16,6 +16,7 @@ import {
   Users,
   Wallet,
   Zap,
+  ShieldCheck,
   type LucideIcon,
 } from "lucide-react";
 
@@ -177,6 +178,7 @@ export const dashboardConfig: Record<DashboardRole, DashboardRoleConfig> = {
         items: [
           { id: "seller-products", label: "Produk Saya", icon: Package, target: "/seller/products" },
           { id: "seller-surplus", label: "Surplus Rescue", icon: Leaf, target: "/seller/surplus" },
+          { id: "seller-sop", label: "SOP & Mitigasi Risiko", icon: ShieldCheck, target: "/seller/sop-risk" },
           { id: "seller-scanner", label: "Scanner QR", icon: QrCode, target: "/seller/scanner" },
           { id: "seller-balance", label: "Saldo & Pencairan", icon: Wallet, target: "/seller/balance" },
         ],
@@ -238,6 +240,7 @@ export const dashboardConfig: Record<DashboardRole, DashboardRoleConfig> = {
           { id: "admin-users", label: "Kelola Pembeli", icon: Users, target: "/admin/users" },
           { id: "admin-umkm", label: "Kelola UMKM", icon: Store, target: "/admin/umkm" },
           { id: "admin-products", label: "Kelola Produk", icon: Package, target: "/admin/products" },
+          { id: "admin-sop", label: "Audit SOP & Risiko", icon: ShieldCheck, target: "/seller/sop-risk" },
           { id: "admin-transactions", label: "Kelola Transaksi", icon: ShoppingBag, target: "/admin/transactions" },
         ],
       },

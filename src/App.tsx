@@ -34,6 +34,7 @@ import SellerOrders from "@/pages/seller/Orders";
 import SellerSurplus from "@/pages/seller/Surplus";
 import SellerScanner from "@/pages/seller/Scanner";
 import SellerBalance from "@/pages/seller/Balance";
+import SOPAndRiskMitigation from "@/pages/seller/SOPAndRiskMitigation";
 
 // Admin pages
 import AdminDashboard from "@/pages/admin/Dashboard";
@@ -88,6 +89,7 @@ function AppShell() {
           <Route path="/seller/products" element={withLayout("seller", <SellerProducts />)} />
           <Route path="/seller/orders" element={withLayout("seller", <SellerOrders />)} />
           <Route path="/seller/surplus" element={withLayout("seller", <SellerSurplus />)} />
+          <Route path="/seller/sop-risk" element={withLayout("seller", <SOPAndRiskMitigation />)} />
           <Route path="/seller/scanner" element={withLayout("seller", <SellerScanner />)} />
           <Route path="/seller/balance" element={withLayout("seller", <SellerBalance />)} />
 

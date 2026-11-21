@@ -314,6 +314,47 @@ export default function ProductDetail() {
                     </div>
                   )}
                 </div>
+
+                <div
+                  onClick={() => {
+                    Swal.fire({
+                      title: "Jaminan SOP & Mitigasi Risiko SecondBit",
+                      html: `
+                        <div style="text-align: left; font-size: 13px; line-height: 1.6; color: #475569;">
+                          <p>Setiap makanan surplus di platform SecondBit dilindungi standar operasional ketat:</p>
+                          <ul style="padding-left: 20px; margin: 8px 0;">
+                            <li><strong>✓ Uji Organoleptik 3T:</strong> Tidak berbau asam, tidak berlendir, tidak berubah rasa saat disiapkan.</li>
+                            <li><strong>✓ Batas Waktu Masak (Holding Time):</strong> Maksimal 4 jam untuk kuah santan, 8 jam untuk lauk kering.</li>
+                            <li><strong>✓ Kemasan Food-Grade:</strong> Tersegel rapi dan higienis.</li>
+                            <li><strong>✓ Garansi 100% Refund:</strong> Uang kembali jika makanan terbukti tidak layak konsumsi saat diambil.</li>
+                          </ul>
+                          <div style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 8px 12px; border-radius: 6px; font-size: 12px; color: #16a34a; margin-top: 6px;">
+                            🛡️ <em>Verifikasi closed-loop dengan tiket QR memastikan pesanan aman, higienis, dan tepat sasaran.</em>
+                          </div>
+                        </div>
+                      `,
+                      confirmButtonText: "Paham, Terima Kasih",
+                      confirmButtonColor: "#EE4D2D",
+                    });
+                  }}
+                  style={{
+                    marginTop: 10,
+                    paddingTop: 10,
+                    borderTop: "1px dashed rgba(38, 170, 108, 0.3)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    cursor: "pointer",
+                    fontSize: 12,
+                    fontWeight: 600,
+                    color: "var(--success)",
+                  }}
+                >
+                  <span style={{ display: "inline-flex", alignItems: "center", gap: 5 }}>
+                    <ShieldCheck size={14} /> Terlindungi Standar SOP 3T & Garansi 100% Refund
+                  </span>
+                  <span style={{ fontSize: 11, textDecoration: "underline" }}>Pelajari SOP →</span>
+                </div>
               </div>
             )}
 
