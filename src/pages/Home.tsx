@@ -16,6 +16,7 @@ import {
   CheckCircle2,
   Users,
   Coins,
+  Gift,
 } from "lucide-react";
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -30,6 +31,7 @@ import {
   getFlashDealProducts,
   getBestSellerProducts,
   getSurplusProducts,
+  getBundleProducts,
   getHiddenGemUMKM,
 } from "@/data/mockData";
 
@@ -41,6 +43,7 @@ export default function Home() {
   const flashDeals = getFlashDealProducts();
   const bestSellers = getBestSellerProducts();
   const surplusProducts = getSurplusProducts();
+  const bundleProducts = getBundleProducts();
   const hiddenGems = getHiddenGemUMKM();
 
   return (
@@ -558,11 +561,11 @@ export default function Home() {
               flexWrap: "wrap",
             }}
           >
-            <div style={{ display: "flex", gap: 20, flex: 1, flexWrap: "wrap" }}>
+            <div style={{ display: "flex", gap: 20, flex: 1, flexWrap: "wrap", alignItems: "center" }}>
               {[
                 { icon: ShieldCheck, label: "Masih Layak Konsumsi", color: "var(--success)" },
                 { icon: Clock, label: "Pickup Terbatas", color: "var(--warning)" },
-                { icon: Star, label: "Harga Spesial", color: "var(--primary)" },
+                { icon: Star, label: "Maks 2 Porsi/User (Fair Share)", color: "var(--primary)" },
               ].map(({ icon: Icon, label, color }) => (
                 <div
                   key={label}
@@ -579,12 +582,117 @@ export default function Home() {
                   {label}
                 </div>
               ))}
+              <span
+                style={{
+                  fontSize: 11.5,
+                  fontWeight: 600,
+                  color: "var(--primary)",
+                  backgroundColor: "rgba(238, 77, 45, 0.1)",
+                  padding: "2px 8px",
+                  borderRadius: "var(--radius-full)",
+                }}
+              >
+                🔒 Kebijakan Anti-Kanibalisasi Margin UMKM
+              </span>
             </div>
           </div>
 
           <div className="scroll-x" style={{ gap: 16 }}>
             {surplusProducts.map((product) => (
               <div key={product.id} style={{ minWidth: 180, maxWidth: 200 }}>
+                <ProductCard product={product} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ===== Surplus Bundle (Hemat & Lindungi Margin UMKM) ===== */}
+      <section
+        className="section"
+        style={{
+          background: "linear-gradient(180deg, rgba(238, 77, 45, 0.04) 0%, rgba(38, 170, 108, 0.04) 100%)",
+          padding: "40px 0",
+        }}
+        data-aos="fade-up"
+      >
+        <div className="container">
+          <div className="section-header">
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <div
+                style={{
+                  width: 36,
+                  height: 36,
+                  borderRadius: "var(--radius-md)",
+                  backgroundColor: "rgba(238, 77, 45, 0.12)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Gift size={20} style={{ color: "var(--primary)" }} />
+              </div>
+              <div>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                  <h2 className="section-title">Surplus Bundle & Combo</h2>
+                  <span
+                    style={{
+                      fontSize: 11,
+                      fontWeight: 700,
+                      backgroundColor: "var(--primary)",
+                      color: "#fff",
+                      padding: "2px 8px",
+                      borderRadius: "var(--radius-full)",
+                    }}
+                  >
+                    Solusi Proteksi Margin
+                  </span>
+                </div>
+                <p style={{ fontSize: 13, color: "var(--muted)", marginTop: 2 }}>
+                  Paket hemat gabungan menu reguler + porsi rescue. Pelanggan puas berhemat, UMKM tetap untung!
+                </p>
+              </div>
+            </div>
+            <Link to="/explore?type=bundle" className="section-link">
+              Lihat Semua Bundle <ChevronRight size={16} />
+            </Link>
+          </div>
+
+          {/* Value note banner */}
+          <div
+            style={{
+              background: "var(--surface)",
+              border: "1px solid var(--border)",
+              borderRadius: "var(--radius-lg)",
+              padding: "14px 18px",
+              marginBottom: 20,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 16,
+              flexWrap: "wrap",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap", flex: 1 }}>
+              <span style={{ fontSize: 13, fontWeight: 700, color: "var(--foreground)" }}>
+                💡 Solusi Cerdas Kedua Pihak:
+              </span>
+              <span style={{ fontSize: 12.5, color: "var(--muted)" }}>
+                Kombinasi 1 porsi menu reguler + 1 porsi surplus mencegah pelanggan hanya membeli makanan obral, sekaligus menjaga margin keuntungan mitra warung tetap sehat.
+              </span>
+            </div>
+            <Link
+              to="/explore?type=bundle"
+              className="btn btn-sm btn-outline"
+              style={{ fontSize: 12, borderRadius: "var(--radius-full)", flexShrink: 0 }}
+            >
+              Jelajahi Paket Hemat
+            </Link>
+          </div>
+
+          <div className="scroll-x" style={{ gap: 16 }}>
+            {bundleProducts.map((product) => (
+              <div key={product.id} style={{ minWidth: 210, maxWidth: 230 }}>
                 <ProductCard product={product} />
               </div>
             ))}

@@ -10,6 +10,7 @@ import type {
   SellerOrder,
   Settlement,
   SurplusItem,
+  SurplusBundle,
   Voucher,
   AdminUser,
 } from "@/types";
@@ -226,30 +227,97 @@ export const products: Product[] = [
     stock: 20, flashDealEndsAt: new Date(Date.now() + 4 * 3600000).toISOString(),
     pickupTime: "Pickup sebelum 16:00",
   },
-  // Surplus products
+  // Surplus products (Limited Surplus with Anti-Cannibalization Protection)
   {
     id: "p10", name: "Klepon & Onde-Onde (5pcs)", slug: "klepon-onde-onde-5pcs",
-    description: "Paket klepon 3 + onde-onde 2. Masih fresh, dibuat pagi ini!",
+    description: "Paket klepon 3 + onde-onde 2. Masih fresh, dibuat pagi ini! Dibatasi maks 2 porsi/user untuk menjaga margin warung.",
     price: 5000, originalPrice: 12000, image: "/images/foods/klepon_onde_onde.jpg",
     category: "Jajanan", rating: 4.9, ratingCount: 210, soldCount: 1500,
     umkmId: "u5", umkmName: "Jajanan Ibu Lestari", type: "surplus",
     stock: 6, pickupTime: "Pickup sebelum 12:00", productionTime: "05:00", shelfLife: "8 jam",
+    maxSurplusPerUser: 2,
+    surplusPolicyNote: "Fair Rescue: Maksimal 2 porsi per user per hari demi melindungi margin warung mitra.",
   },
   {
     id: "p11", name: "Nasi Campur Bali", slug: "nasi-campur-bali",
-    description: "Nasi campur khas Bali dengan ayam suwir, sate lilit, dan lawar.",
+    description: "Nasi campur khas Bali dengan ayam suwir, sate lilit, dan lawar. Porsi surplus terbatas demi menjaga kestabilan harga menu reguler.",
     price: 12000, originalPrice: 22000, image: "/images/foods/nasi_campur_bali.jpg",
     category: "Nasi & Lauk", rating: 4.6, ratingCount: 78, soldCount: 340,
     umkmId: "u1", umkmName: "Warung Bu Siti", type: "surplus",
     stock: 4, pickupTime: "Pickup sebelum 13:00", productionTime: "06:00", shelfLife: "6 jam",
+    maxSurplusPerUser: 2,
+    surplusPolicyNote: "Fair Rescue: Maksimal 2 porsi per user per hari demi melindungi margin warung mitra.",
   },
   {
     id: "p12", name: "Lemper Ayam (4pcs)", slug: "lemper-ayam-4pcs",
-    description: "Lemper isi ayam suwir dibungkus daun pisang. Gurih dan kenyal!",
+    description: "Lemper isi ayam suwir dibungkus daun pisang. Gurih dan kenyal! Porsi penyelamat terbatas.",
     price: 6000, originalPrice: 14000, image: "/images/foods/lemper_ayam.jpg",
     category: "Jajanan", rating: 4.8, ratingCount: 156, soldCount: 980,
     umkmId: "u5", umkmName: "Jajanan Ibu Lestari", type: "surplus",
     stock: 3, pickupTime: "Pickup sebelum 11:00", productionTime: "05:00", shelfLife: "6 jam",
+    maxSurplusPerUser: 2,
+    surplusPolicyNote: "Fair Rescue: Maksimal 2 porsi per user per hari demi melindungi margin warung mitra.",
+  },
+  // Surplus Bundles (Kombinasi Reguler + Surplus untuk Lindungi Margin Warung)
+  {
+    id: "p13", name: "Paket Combo Rescue: Nasi Geprek + Lauk Surplus + Es Teh", slug: "paket-combo-rescue-geprek",
+    description: "Paket cerdas lindungi UMKM! Mengombinasikan 1x Nasi Ayam Geprek Sambal Korek segar (reguler) + 1x Lauk Tambahan Telur Balado (surplus) + 1x Es Teh Jumbo. Kenyang hemat tanpa merusak margin warung!",
+    price: 19000, originalPrice: 32000, image: "/images/foods/ayam_geprek.jpg",
+    category: "Nasi & Lauk", rating: 4.9, ratingCount: 184, soldCount: 420,
+    umkmId: "u3", umkmName: "Ayam Geprek Mas Eko", type: "bundle",
+    stock: 7, isBundle: true, bundleSavings: 13000,
+    bundleItems: [
+      "1x Nasi Ayam Geprek Sambal Korek (Menu Reguler Segar)",
+      "1x Telur Balado & Tempe Orek (Surplus Food Rescue)",
+      "1x Es Teh Manis Jumbo Segar",
+    ],
+    bundleMarginNote: "Melindungi margin UMKM dengan kombinasi menu reguler + surplus pendamping",
+    pickupTime: "Pickup sebelum 15:00",
+  },
+  {
+    id: "p14", name: "Mystery Rescue Bag: Aneka Kue Subuh & Jajanan Pasar", slug: "mystery-rescue-bag-jajanan",
+    description: "Mystery bag berkonsep zero-waste berisi 6-8 potong aneka jajanan pasar pilihan dapur (lemper, onde-onde, klepon, pastel). Surprise hemat bermutu!",
+    price: 14000, originalPrice: 30000, image: "/images/foods/klepon_onde_onde.jpg",
+    category: "Jajanan", rating: 4.9, ratingCount: 312, soldCount: 890,
+    umkmId: "u5", umkmName: "Jajanan Ibu Lestari", type: "bundle",
+    stock: 5, isBundle: true, bundleSavings: 16000,
+    bundleItems: [
+      "3x Lemper Ayam Daun Pisang",
+      "3x Kue Klepon Gula Merah",
+      "2x Onde-Onde Wijen Gurih",
+    ],
+    bundleMarginNote: "Paket kejutan selamatkan stok berlebih pagi hari tanpa merusak harga satuan",
+    pickupTime: "Pickup sebelum 12:30",
+  },
+  {
+    id: "p15", name: "Paket Mahasiswa Hemat: Bakso Urat + Tahu Bakso Surplus + Es Jeruk", slug: "paket-mahasiswa-hemat-bakso",
+    description: "1 porsi Bakso Urat Asli kuah kaldu sapi (reguler) dipadu 2 pcs Tahu Bakso Goreng (surplus hari ini) + 1 gelas Es Jeruk Peras Segar.",
+    price: 21000, originalPrice: 35000, image: "/images/foods/paket_bakso_esteh.jpg",
+    category: "Mie & Bakso", rating: 4.8, ratingCount: 142, soldCount: 510,
+    umkmId: "u2", umkmName: "Bakso Pak Darmo", type: "bundle",
+    stock: 8, isBundle: true, bundleSavings: 14000,
+    bundleItems: [
+      "1x Bakso Urat Kuah Sapi Panas (Reguler)",
+      "2x Tahu Bakso Goreng Renyah (Surplus)",
+      "1x Es Jeruk Peras Asli",
+    ],
+    bundleMarginNote: "Kombinasi menu utama reguler + menu surplus pendamping",
+    pickupTime: "Pickup sebelum 16:00",
+  },
+  {
+    id: "p16", name: "Duo Nasi Campur Berkah (Family / Kosan Rescue)", slug: "duo-nasi-campur-berkah",
+    description: "Paket porsi berdua hemat maksimal! 2 porsi Nasi Campur Komplit siap santap sebelum gerai tutup, lengkap dengan kerupuk dan sambal khas Bu Siti.",
+    price: 25000, originalPrice: 44000, image: "/images/foods/nasi_campur_bali.jpg",
+    category: "Nasi & Lauk", rating: 4.7, ratingCount: 95, soldCount: 230,
+    umkmId: "u1", umkmName: "Warung Bu Siti", type: "bundle",
+    stock: 4, isBundle: true, bundleSavings: 19000,
+    bundleItems: [
+      "2x Nasi Campur Komplit Lauk Pilihan",
+      "2x Kerupuk Kaleng Renyah",
+      "2x Sambal Bajak Khas Bu Siti",
+    ],
+    bundleMarginNote: "Paket bundling rombongan mahasiswa kosan, hemat & aman margin",
+    pickupTime: "Pickup sebelum 14:00",
   },
 ];
 
@@ -508,6 +576,34 @@ export const sellerSurplus: SurplusItem[] = [
   },
 ];
 
+// ===== Seller Surplus Bundles (Kombinasi Reguler + Surplus Pelindung Margin) =====
+export const sellerSurplusBundles: SurplusBundle[] = [
+  {
+    id: "BND-001",
+    name: "Paket Combo Penyelamat: Nasi Pecel + Telur Bali + Es Teh",
+    regularItem: "1x Nasi Pecel Komplit (Menu Reguler)",
+    surplusItem: "1x Telur Balado & Tempe Orek (Surplus)",
+    drinksItem: "1x Es Teh Manis Jumbo",
+    bundlePrice: 19000,
+    normalPrice: 29000,
+    portions: 5,
+    status: "Aktif",
+    marginProtectionRate: "68% Margin Terlindungi",
+  },
+  {
+    id: "BND-002",
+    name: "Mystery Bag Warung Bu Siti: 2 Porsi Surprise Campur",
+    regularItem: "1x Nasi Campur Bali Reguler",
+    surplusItem: "1x Porsi Lauk Harian Dapur (Surplus)",
+    drinksItem: "1x Kerupuk Kaleng",
+    bundlePrice: 22000,
+    normalPrice: 35000,
+    portions: 3,
+    status: "Aktif",
+    marginProtectionRate: "72% Margin Terlindungi",
+  },
+];
+
 // ===== Buyer Vouchers =====
 export const vouchers: Voucher[] = [
   {
@@ -561,6 +657,10 @@ export function getFlashDealProducts(): Product[] {
 
 export function getSurplusProducts(): Product[] {
   return products.filter((p) => p.type === "surplus");
+}
+
+export function getBundleProducts(): Product[] {
+  return products.filter((p) => p.type === "bundle" || p.isBundle);
 }
 
 export function getBestSellerProducts(): Product[] {

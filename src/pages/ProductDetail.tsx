@@ -14,6 +14,10 @@ import {
   CheckCircle2,
   Sparkles,
   QrCode,
+  Lock,
+  Gift,
+  AlertCircle,
+  HelpCircle,
 } from "lucide-react";
 import { useState } from "react";
 import Swal from "sweetalert2";
@@ -313,9 +317,164 @@ export default function ProductDetail() {
               </div>
             )}
 
+            {/* Limited Surplus Protection Notice */}
+            {product.type === "surplus" && (
+              <div
+                style={{
+                  backgroundColor: "#F0F9FF",
+                  border: "1.5px solid #BAE6FD",
+                  borderRadius: "var(--radius-lg)",
+                  padding: "16px 18px",
+                  marginBottom: 20,
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <Lock size={16} style={{ color: "#0284C7" }} />
+                    <h3 style={{ fontSize: 14, fontWeight: 800, color: "#0369A1" }}>
+                      Kebijakan Limited Surplus Aktif
+                    </h3>
+                  </div>
+                  <span
+                    style={{
+                      fontSize: 11,
+                      fontWeight: 800,
+                      backgroundColor: "#0284C7",
+                      color: "#fff",
+                      padding: "2px 8px",
+                      borderRadius: "var(--radius-full)",
+                    }}
+                  >
+                    Maks {product.maxSurplusPerUser || 2} Porsi/User
+                  </span>
+                </div>
+
+                <p style={{ fontSize: 12.5, color: "#0C4A6E", lineHeight: 1.6, marginBottom: 10 }}>
+                  Demi menjaga kelangsungan UMKM mitra & mencegah kanibalisasi omzet menu reguler, pembelian makanan surplus dibatasi maksimal <strong>{product.maxSurplusPerUser || 2} porsi per pelanggan</strong>.
+                </p>
+
+                <div
+                  style={{
+                    backgroundColor: "#fff",
+                    borderRadius: "var(--radius-md)",
+                    padding: "10px 12px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    gap: 10,
+                    border: "1px dashed #7DD3FC",
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <Gift size={15} style={{ color: "#7C3AED", flexShrink: 0 }} />
+                    <span style={{ fontSize: 12, color: "#475569" }}>
+                      Butuh porsi lebih banyak? Pilih <strong>Surplus Bundle</strong> (Reguler + Surplus hemat).
+                    </span>
+                  </div>
+                  <Link
+                    to="/explore?type=bundle"
+                    className="btn btn-sm"
+                    style={{
+                      backgroundColor: "#8B5CF6",
+                      color: "#fff",
+                      fontSize: 11,
+                      fontWeight: 700,
+                      padding: "4px 10px",
+                      borderRadius: "var(--radius-full)",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    Lihat Bundle →
+                  </Link>
+                </div>
+              </div>
+            )}
+
+            {/* Surplus Bundle Showcase Card */}
+            {(product.type === "bundle" || product.isBundle) && (
+              <div
+                style={{
+                  backgroundColor: "#FAF5FF",
+                  border: "1.5px solid #E9D5FF",
+                  borderRadius: "var(--radius-lg)",
+                  padding: "18px 20px",
+                  marginBottom: 20,
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <Gift size={18} style={{ color: "#7C3AED" }} />
+                    <h3 style={{ fontSize: 15, fontWeight: 800, color: "#6D28D9" }}>
+                      Isi Paket Surplus Bundle
+                    </h3>
+                  </div>
+                  {product.bundleSavings && (
+                    <span
+                      style={{
+                        fontSize: 11.5,
+                        fontWeight: 800,
+                        backgroundColor: "#7C3AED",
+                        color: "#fff",
+                        padding: "3px 10px",
+                        borderRadius: "var(--radius-full)",
+                      }}
+                    >
+                      🎉 Hemat {formatPrice(product.bundleSavings)}
+                    </span>
+                  )}
+                </div>
+
+                <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 12 }}>
+                  {product.bundleItems?.map((item, idx) => (
+                    <div
+                      key={idx}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 10,
+                        padding: "8px 12px",
+                        backgroundColor: "#fff",
+                        borderRadius: "var(--radius-md)",
+                        border: "1px solid #F3E8FF",
+                        fontSize: 13,
+                        fontWeight: 600,
+                        color: "#374151",
+                      }}
+                    >
+                      <CheckCircle2 size={16} style={{ color: "#7C3AED", flexShrink: 0 }} />
+                      <span>{item}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div
+                  style={{
+                    fontSize: 11.5,
+                    color: "#6B7280",
+                    lineHeight: 1.5,
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 6,
+                    paddingTop: 8,
+                    borderTop: "1px dashed #DDD6FE",
+                  }}
+                >
+                  <Sparkles size={14} style={{ color: "#7C3AED", flexShrink: 0 }} />
+                  <span>
+                    <strong>Margin-Friendly:</strong> Bundle ini mengombinasikan menu reguler (menjaga omzet warung) dengan surplus makanan (mencegah food waste).
+                  </span>
+                </div>
+              </div>
+            )}
+
             {/* Stock */}
             <div style={{ fontSize: 13, color: "var(--muted)", marginBottom: 16 }}>
               Ketersediaan: <strong style={{ color: product.stock <= 5 ? "var(--destructive)" : "var(--foreground)" }}>{product.stock} porsi tersedia</strong>
+              {product.type === "surplus" && (
+                <span style={{ marginLeft: 8, color: "#0284C7", fontWeight: 600 }}>
+                  (Dibatasi maks {product.maxSurplusPerUser || 2} porsi/akun)
+                </span>
+              )}
             </div>
 
             {/* Quantity + Actions */}
@@ -359,7 +518,33 @@ export default function ProductDetail() {
                   </span>
                   <button
                     className="btn btn-icon btn-ghost"
-                    onClick={() => setQty(Math.min(product.stock, qty + 1))}
+                    onClick={() => {
+                      if (product.type === "surplus") {
+                        const limit = product.maxSurplusPerUser || 2;
+                        if (qty >= limit) {
+                          Swal.fire({
+                            icon: "warning",
+                            title: "Batas Maksimal Surplus Tercapai",
+                            html: `
+                              <div style="text-align: left; font-size: 13.5px; line-height: 1.6;">
+                                <p>Demi melindungi keberlanjutan UMKM mitra & mencegah kanibalisasi menu reguler, pembelian makanan surplus dibatasi maksimal <strong>${limit} porsi per pelanggan</strong> per hari.</p>
+                                <p style="margin-top: 10px; color: #7C3AED; font-weight: 600;">💡 Mau porsi lebih banyak? Pilih <strong>Surplus Bundle</strong> yang mengombinasikan menu reguler & surplus dengan harga hemat!</p>
+                              </div>
+                            `,
+                            confirmButtonText: "Lihat Surplus Bundle",
+                            showCancelButton: true,
+                            cancelButtonText: "Tetap 2 Porsi",
+                            confirmButtonColor: "#8B5CF6",
+                          }).then((res) => {
+                            if (res.isConfirmed) {
+                              navigate("/explore?type=bundle");
+                            }
+                          });
+                          return;
+                        }
+                      }
+                      setQty(Math.min(product.stock, qty + 1));
+                    }}
                     style={{ borderRadius: 0, width: 36, height: 36 }}
                     aria-label="Tambah"
                   >

@@ -1,15 +1,20 @@
 import { Link } from "react-router-dom";
-import { Bell, Menu, Moon, Sun } from "lucide-react";
+import { Bell, Moon, Sun, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import Swal from "sweetalert2";
 import { useTheme } from "@/hooks/useTheme";
 import type { DashboardRoleConfig } from "@/config/dashboardConfig";
 
 interface DashboardNavbarProps {
   config: DashboardRoleConfig;
-  onOpenMenu: () => void;
+  isSidebarOpen: boolean;
+  onToggleSidebar: () => void;
 }
 
-export default function DashboardNavbar({ config, onOpenMenu }: DashboardNavbarProps) {
+export default function DashboardNavbar({
+  config,
+  isSidebarOpen,
+  onToggleSidebar,
+}: DashboardNavbarProps) {
   const { theme, toggleTheme } = useTheme();
   const palette = config.navbar;
 
@@ -54,9 +59,10 @@ export default function DashboardNavbar({ config, onOpenMenu }: DashboardNavbarP
       >
         <button
           type="button"
-          onClick={onOpenMenu}
+          onClick={onToggleSidebar}
           className="dash-menu-btn"
-          aria-label="Buka menu navigasi"
+          aria-label={isSidebarOpen ? "Sembunyikan sidebar (Ctrl+B)" : "Tampilkan sidebar (Ctrl+B)"}
+          title={isSidebarOpen ? "Sembunyikan sidebar (Ctrl+B)" : "Tampilkan sidebar (Ctrl+B)"}
           style={{
             width: 36,
             height: 36,
@@ -68,9 +74,11 @@ export default function DashboardNavbar({ config, onOpenMenu }: DashboardNavbarP
             backgroundColor: "transparent",
             color: palette.text,
             flexShrink: 0,
+            cursor: "pointer",
+            transition: "all var(--transition-fast)",
           }}
         >
-          <Menu size={18} />
+          {isSidebarOpen ? <PanelLeftClose size={18} /> : <PanelLeftOpen size={18} />}
         </button>
 
         <div style={{ minWidth: 0 }}>

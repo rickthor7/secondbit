@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSearchParams, Link } from "react-router-dom";
-import { Search, SlidersHorizontal, X, RotateCcw, Sparkles, Star, Zap, Leaf, Flame } from "lucide-react";
+import { Search, SlidersHorizontal, X, RotateCcw, Sparkles, Star, Zap, Leaf, Flame, Gift, ShieldCheck, Lock } from "lucide-react";
 import AOS from "aos";
 
 import ProductCard from "@/components/shared/ProductCard";
@@ -115,14 +115,18 @@ export default function Explore() {
             }}
           >
             {typeFilter === "surplus"
-              ? "🌿 Surplus Food Rescue"
+              ? "🌿 Surplus Food Rescue (Limited)"
               : typeFilter === "flash-deal"
               ? "⚡ Flash Deal Spesial"
+              : typeFilter === "bundle"
+              ? "🎁 Paket Surplus Bundle"
               : "Jelajahi Makanan Sekitar UNESA"}
           </h1>
           <p style={{ fontSize: 14, color: "var(--muted)", marginBottom: 20 }}>
-            {typeFilter === "surplus"
-              ? "Makanan berkualitas layak konsumsi dengan potongan hingga 70% — kurangi food waste & hemat budget!"
+            {typeFilter === "bundle"
+              ? "Paket bundling cerdas memadukan menu reguler segar + surplus hemat. Kenyang puas, dompet aman, sekaligus menjaga margin UMKM tetap sehat!"
+              : typeFilter === "surplus"
+              ? "Makanan berkualitas dengan potongan hingga 70%. Dibatasi maks 2 porsi/user demi melindungi margin dan kelangsungan warung mitra."
               : "Temukan kuliner UMKM lokal legendaris dan promo hemat di sekitar Ketintang, Surabaya."}
           </p>
         </div>
@@ -221,6 +225,23 @@ export default function Explore() {
             Semua Tipe
           </Link>
           <Link
+            to="/explore?type=bundle"
+            className="btn btn-sm"
+            style={{
+              borderRadius: "var(--radius-full)",
+              backgroundColor: typeFilter === "bundle" ? "#8B5CF6" : "var(--surface)",
+              color: typeFilter === "bundle" ? "#fff" : "var(--foreground)",
+              border: "1px solid var(--border)",
+              fontSize: 12,
+              fontWeight: 600,
+              padding: "5px 14px",
+              gap: 4,
+            }}
+          >
+            <Gift size={13} />
+            <span>Surplus Bundle</span>
+          </Link>
+          <Link
             to="/explore?type=surplus"
             className="btn btn-sm"
             style={{
@@ -235,7 +256,7 @@ export default function Explore() {
             }}
           >
             <Leaf size={13} />
-            <span>Surplus Rescue</span>
+            <span>Surplus (Maks 2)</span>
           </Link>
           <Link
             to="/explore?type=flash-deal"
@@ -371,6 +392,76 @@ export default function Explore() {
             </button>
           )}
         </div>
+
+        {/* Contextual Banner for Limited Surplus */}
+        {typeFilter === "surplus" && (
+          <div
+            style={{
+              backgroundColor: "#F0F9FF",
+              border: "1px solid #BAE6FD",
+              borderRadius: "var(--radius-lg)",
+              padding: "14px 18px",
+              marginBottom: 20,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 12,
+              flexWrap: "wrap",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <Lock size={18} style={{ color: "#0284C7", flexShrink: 0 }} />
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "#0369A1" }}>
+                  Kebijakan Limited Surplus (Fair Share & Anti-Kanibalisasi)
+                </div>
+                <div style={{ fontSize: 12, color: "#0C4A6E" }}>
+                  Maksimal pembelian 2 porsi/user untuk menjaga kestabilan harga dan melindungi margin UMKM mitra.
+                </div>
+              </div>
+            </div>
+            <Link
+              to="/explore?type=bundle"
+              className="btn btn-sm"
+              style={{
+                backgroundColor: "#8B5CF6",
+                color: "#fff",
+                fontSize: 12,
+                fontWeight: 700,
+                borderRadius: "var(--radius-full)",
+                whiteSpace: "nowrap",
+              }}
+            >
+              Coba Surplus Bundle (Tanpa Kuota) →
+            </Link>
+          </div>
+        )}
+
+        {/* Contextual Banner for Surplus Bundle */}
+        {typeFilter === "bundle" && (
+          <div
+            style={{
+              background: "linear-gradient(135deg, #FAF5FF 0%, #F3E8FF 100%)",
+              border: "1px solid #E9D5FF",
+              borderRadius: "var(--radius-lg)",
+              padding: "14px 18px",
+              marginBottom: 20,
+              display: "flex",
+              alignItems: "center",
+              gap: 12,
+            }}
+          >
+            <Gift size={20} style={{ color: "#7C3AED", flexShrink: 0 }} />
+            <div>
+              <div style={{ fontSize: 13.5, fontWeight: 800, color: "#6D28D9" }}>
+                Solusi Win-Win: Paket Kombinasi Menu Reguler + Surplus
+              </div>
+              <div style={{ fontSize: 12, color: "#4B5563" }}>
+                Nikmati paket makan lengkap hemat hingga 45%! Menu reguler menjaga omzet mitra UMKM, sementara porsi surplus diselamatkan dari pemborosan.
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Products Grid or Empty State */}
         {filtered.length > 0 ? (

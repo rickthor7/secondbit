@@ -1,6 +1,6 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import type { CSSProperties } from "react";
-import { LogOut, Moon, Sun, X, ArrowLeft } from "lucide-react";
+import { LogOut, Moon, Sun, PanelLeftClose, ArrowLeft } from "lucide-react";
 import Swal from "sweetalert2";
 import { useTheme } from "@/hooks/useTheme";
 import logoImg from "@/assets/images/logo.jpg";
@@ -8,15 +8,28 @@ import type { DashboardRoleConfig } from "@/config/dashboardConfig";
 
 interface DashboardSidebarProps {
   config: DashboardRoleConfig;
-  open: boolean;
+  desktopOpen: boolean;
+  mobileOpen: boolean;
   onClose: () => void;
 }
 
-export default function DashboardSidebar({ config, open, onClose }: DashboardSidebarProps) {
+export default function DashboardSidebar({
+  config,
+  desktopOpen,
+  mobileOpen,
+  onClose,
+}: DashboardSidebarProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
   const palette = config.sidebar;
+
+  const handleNavClick = () => {
+    // Tutup otomatis saat di layar smartphone/tablet
+    if (typeof window !== "undefined" && window.innerWidth < 1024) {
+      onClose();
+    }
+  };
 
   const handleLogout = async () => {
     const result = await Swal.fire({
@@ -57,7 +70,8 @@ export default function DashboardSidebar({ config, open, onClose }: DashboardSid
   return (
     <aside
       className="dash-sidebar"
-      data-open={open ? "true" : "false"}
+      data-desktop-open={desktopOpen ? "true" : "false"}
+      data-mobile-open={mobileOpen ? "true" : "false"}
       style={{
         backgroundColor: palette.background,
         color: palette.text,
@@ -98,22 +112,25 @@ export default function DashboardSidebar({ config, open, onClose }: DashboardSid
         <button
           type="button"
           onClick={onClose}
-          aria-label="Tutup menu"
+          aria-label="Sembunyikan sidebar (Ctrl+B)"
+          title="Sembunyikan sidebar (Ctrl+B)"
           className="dash-sidebar-close"
           style={{
             marginLeft: "auto",
-            display: "none",
+            display: "inline-flex",
             alignItems: "center",
             justifyContent: "center",
             width: 30,
             height: 30,
             borderRadius: "var(--radius-md)",
-            border: "none",
+            border: `1px solid ${palette.border}`,
             backgroundColor: "transparent",
             color: palette.text,
+            cursor: "pointer",
+            transition: "all var(--transition-fast)",
           }}
         >
-          <X size={18} />
+          <PanelLeftClose size={16} />
         </button>
       </div>
 
@@ -198,7 +215,7 @@ export default function DashboardSidebar({ config, open, onClose }: DashboardSid
                   <Link
                     key={item.id}
                     to={item.target}
-                    onClick={onClose}
+                    onClick={handleNavClick}
                     aria-current={itemActive ? "page" : undefined}
                     style={{
                       position: "relative",
@@ -248,6 +265,30 @@ export default function DashboardSidebar({ config, open, onClose }: DashboardSid
           gap: 4,
         }}
       >
+        <button
+          type="button"
+          onClick={onClose}
+          style={linkStyle}
+          title="Sembunyikan sidebar (Ctrl+B)"
+        >
+          <PanelLeftClose size={15} />
+          <span>Sembunyikan Sidebar</span>
+          <span
+            style={{
+              marginLeft: "auto",
+              fontSize: 9.5,
+              padding: "1px 5px",
+              borderRadius: "4px",
+              backgroundColor: palette.cardBackground,
+              color: palette.muted,
+              border: `1px solid ${palette.border}`,
+              fontFamily: "monospace",
+            }}
+          >
+            Ctrl+B
+          </span>
+        </button>
+
         <Link to="/" style={linkStyle}>
           <ArrowLeft size={15} />
           Kembali ke Marketplace

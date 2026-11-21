@@ -13,13 +13,35 @@ export interface Product {
   soldCount: number;
   umkmId: string;
   umkmName: string;
-  type: "normal" | "flash-deal" | "surplus";
+  type: "normal" | "flash-deal" | "surplus" | "bundle";
   isBestSeller?: boolean;
   pickupTime?: string;
   productionTime?: string;
   shelfLife?: string;
   stock: number;
   flashDealEndsAt?: string;
+  // Limited Surplus & Margin Protection
+  maxSurplusPerUser?: number;
+  requiresRegularItem?: boolean;
+  surplusPolicyNote?: string;
+  // Surplus Bundle Fields
+  isBundle?: boolean;
+  bundleItems?: string[];
+  bundleSavings?: number;
+  bundleMarginNote?: string;
+}
+
+export interface SurplusBundle {
+  id: string;
+  name: string;
+  regularItem: string;
+  surplusItem: string;
+  drinksItem?: string;
+  bundlePrice: number;
+  normalPrice: number;
+  portions: number;
+  status: "Aktif" | "Habis";
+  marginProtectionRate: string;
 }
 
 export interface UMKM {

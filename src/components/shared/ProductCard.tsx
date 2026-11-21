@@ -19,13 +19,21 @@ export default function ProductCard({ product, showUMKM = true }: ProductCardPro
     e.preventDefault();
     e.stopPropagation();
 
+    const subtitle =
+      product.type === "surplus"
+        ? "Fair Rescue: Dibatasi maks 2 porsi/user demi menjaga margin warung."
+        : product.type === "bundle"
+        ? "Surplus Bundle: Hemat & bantu UMKM tanpa kanibalisasi margin!"
+        : undefined;
+
     Swal.fire({
       toast: true,
       position: "top-end",
       showConfirmButton: false,
-      timer: 2000,
+      timer: 2600,
       icon: "success",
-      title: `${product.name} ditambahkan ke keranjang!`,
+      title: `${product.name} ditambahkan!`,
+      text: subtitle,
       background: "var(--background)",
       color: "var(--foreground)",
     });
@@ -90,8 +98,29 @@ export default function ProductCard({ product, showUMKM = true }: ProductCardPro
             </span>
           )}
           {product.type === "surplus" && (
-            <span className="badge badge-surplus" style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.15)" }}>
-              🌿 Surplus Rescue
+            <>
+              <span className="badge badge-surplus" style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.15)" }}>
+                🌿 Surplus Rescue
+              </span>
+              <span
+                style={{
+                  backgroundColor: "rgba(3, 105, 161, 0.92)",
+                  color: "#fff",
+                  fontSize: 9.5,
+                  fontWeight: 700,
+                  padding: "2px 6px",
+                  borderRadius: "var(--radius-sm)",
+                  letterSpacing: "0.2px",
+                  boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
+                }}
+              >
+                🔒 Maks 2 Porsi/User
+              </span>
+            </>
+          )}
+          {(product.type === "bundle" || product.isBundle) && (
+            <span className="badge badge-bundle" style={{ boxShadow: "0 2px 6px rgba(0,0,0,0.15)" }}>
+              🎁 Surplus Bundle
             </span>
           )}
           {product.isBestSeller && (
@@ -175,7 +204,7 @@ export default function ProductCard({ product, showUMKM = true }: ProductCardPro
               display: "flex",
               alignItems: "center",
               gap: 4,
-              marginBottom: 8,
+              marginBottom: 6,
             }}
           >
             <MapPin size={12} style={{ color: "var(--muted)", flexShrink: 0 }} />
@@ -190,6 +219,25 @@ export default function ProductCard({ product, showUMKM = true }: ProductCardPro
               }}
             >
               {product.umkmName}
+            </span>
+          </div>
+        )}
+
+        {product.bundleSavings && (
+          <div style={{ marginBottom: 6 }}>
+            <span
+              style={{
+                fontSize: 10.5,
+                fontWeight: 700,
+                color: "#6D28D9",
+                backgroundColor: "#EDE9FE",
+                padding: "2px 7px",
+                borderRadius: "var(--radius-full)",
+                display: "inline-block",
+                border: "1px solid #DDD6FE",
+              }}
+            >
+              🎉 Hemat {formatPrice(product.bundleSavings)}
             </span>
           </div>
         )}

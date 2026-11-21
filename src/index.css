@@ -265,6 +265,16 @@ button {
   color: #fff;
 }
 
+.badge-bundle {
+  background: linear-gradient(135deg, #8B5CF6, #6366F1);
+  color: #fff;
+}
+
+.badge-limited {
+  background-color: #0284C7;
+  color: #fff;
+}
+
 .badge-bestseller {
   background-color: var(--primary);
   color: #fff;
@@ -341,15 +351,31 @@ button {
 }
 
 @keyframes pulse-ring {
-  0% { box-shadow: 0 0 0 0 rgba(25, 135, 84, 0.7); }
-  70% { box-shadow: 0 0 0 6px rgba(25, 135, 84, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(25, 135, 84, 0); }
+  0% {
+    box-shadow: 0 0 0 0 rgba(25, 135, 84, 0.7);
+  }
+
+  70% {
+    box-shadow: 0 0 0 6px rgba(25, 135, 84, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(25, 135, 84, 0);
+  }
 }
 
 @keyframes pulse-ring-orange {
-  0% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7); }
-  70% { box-shadow: 0 0 0 6px rgba(245, 158, 11, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(245, 158, 11, 0); }
+  0% {
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+  }
+
+  70% {
+    box-shadow: 0 0 0 6px rgba(245, 158, 11, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0);
+  }
 }
 
 /* Quick Add Button */
@@ -496,7 +522,7 @@ button {
   display: none;
 }
 
-.scroll-x > * {
+.scroll-x>* {
   scroll-snap-align: start;
   flex-shrink: 0;
 }
@@ -561,8 +587,13 @@ button {
 }
 
 @keyframes skeleton-loading {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 /* ===== Animations ===== */
@@ -572,6 +603,7 @@ button {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -579,8 +611,13 @@ button {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideInRight {
@@ -588,6 +625,7 @@ button {
     opacity: 0;
     transform: translateX(20px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -595,17 +633,31 @@ button {
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.6; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.6;
+  }
 }
 
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .spin {
@@ -638,7 +690,7 @@ button {
   .bottom-nav {
     display: flex;
   }
-  
+
   body {
     padding-bottom: 70px;
   }
@@ -681,10 +733,12 @@ button {
   display: flex;
   min-height: 100vh;
   background-color: var(--surface);
+  position: relative;
+  overflow-x: hidden;
 }
 
 .dash-sidebar {
-  display: none;
+  display: flex;
   flex-direction: column;
   width: 264px;
   flex-shrink: 0;
@@ -692,6 +746,12 @@ button {
   top: 0;
   height: 100vh;
   overflow: hidden;
+  transition: width 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+              margin-left 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+              opacity 0.25s ease,
+              visibility 0.28s;
+  z-index: var(--z-sticky);
 }
 
 .dash-main {
@@ -699,6 +759,27 @@ button {
   min-width: 0;
   display: flex;
   flex-direction: column;
+  transition: width 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.dash-menu-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.dash-menu-btn:hover {
+  background-color: color-mix(in srgb, currentColor 10%, transparent) !important;
+}
+
+.dash-sidebar-close {
+  display: inline-flex !important;
+  transition: all var(--transition-fast);
+}
+
+.dash-sidebar-close:hover {
+  background-color: color-mix(in srgb, currentColor 10%, transparent) !important;
 }
 
 .dash-navbar {
@@ -810,31 +891,48 @@ button {
 }
 
 @media (min-width: 1024px) {
-  .dash-sidebar {
-    display: flex;
+  .dash-sidebar[data-desktop-open="true"] {
+    width: 264px;
+    margin-left: 0;
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .dash-sidebar[data-desktop-open="false"] {
+    width: 0;
+    margin-left: -264px;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
   }
 
   .dash-bottom-nav {
     display: none;
   }
-
-  .dash-menu-btn {
-    display: none !important;
-  }
 }
 
 @media (max-width: 1023px) {
-  .dash-sidebar[data-open="true"] {
-    display: flex;
+  .dash-sidebar {
     position: fixed;
     top: 0;
     left: 0;
     bottom: 0;
+    width: 280px;
+    height: 100vh;
     z-index: var(--z-modal);
-    box-shadow: var(--shadow-xl);
+    transform: translateX(-100%);
+    visibility: hidden;
+    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.28s;
   }
 
-  .dash-sidebar[data-open="true"] .dash-sidebar-close {
+  .dash-sidebar[data-mobile-open="true"] {
+    transform: translateX(0);
+    visibility: visible;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+  }
+
+  .dash-sidebar-close {
     display: inline-flex !important;
   }
 
