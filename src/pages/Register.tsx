@@ -1,11 +1,14 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Mail, Lock, Eye, EyeOff, User, Store } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Mail, Lock, Eye, EyeOff, User, Store, Phone, Sparkles, CheckCircle2 } from "lucide-react";
 import Swal from "sweetalert2";
 import logoImg from "@/assets/images/logo.jpg";
 
 export default function Register() {
+  const navigate = useNavigate();
   const [name, setName] = useState("");
+  const [shopName, setShopName] = useState("");
+  const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -13,14 +16,40 @@ export default function Register() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    localStorage.setItem(
+      "secondbit-auth",
+      JSON.stringify({
+        role,
+        name: role === "seller" ? shopName || name : name,
+        email,
+      })
+    );
+
     Swal.fire({
       icon: "success",
-      title: "Registrasi Berhasil!",
-      text: role === "seller"
-        ? "Akun mitra UMKM kamu sedang diverifikasi"
-        : "Selamat bergabung di SecondBit!",
+      title: role === "seller" ? "Kemitraan UMKM Berhasil Didaftarkan!" : "Registrasi Berhasil!",
+      html: `
+        <div style="font-size:13.5px; text-align:left; line-height:1.6; color:#475569;">
+          ${
+            role === "seller"
+              ? `<p>Selamat datang di keluarga Mitra SecondBit! Toko <strong>${shopName || name}</strong> langsung siap diverifikasi dan dapat mulai menjual surplus.</p>
+                 <div style="background:#F0FDF4; border:1px solid #BBF7D0; padding:10px; border-radius:8px; color:#16A34A; font-size:12.5px;">
+                   ✓ Gratis biaya daftar (Rp 0)<br/>
+                   ✓ Akses instan ke Dashboard UMKM & Fitur Jurnal 30 Detik
+                 </div>`
+              : `<p>Selamat bergabung di SecondBit! Selamatkan makanan lezat dan nikmati diskon surplus hingga 70% di sekitar kampus.</p>`
+          }
+        </div>
+      `,
       confirmButtonColor: "#EE4D2D",
-      timer: 2500,
+      confirmButtonText: role === "seller" ? "Buka Dashboard Toko" : "Mulai Belanja",
+    }).then(() => {
+      if (role === "seller") {
+        navigate("/seller");
+      } else {
+        navigate("/buyer");
+      }
     });
   };
 
@@ -63,7 +92,7 @@ export default function Register() {
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
             gap: 12,
-            marginBottom: 24,
+            marginBottom: 20,
           }}
         >
           {[
@@ -107,10 +136,44 @@ export default function Register() {
           ))}
         </div>
 
+        {/* Value Proposition Box for UMKM */}
+        {role === "seller" && (
+          <div
+            style={{
+              backgroundColor: "rgba(238, 77, 45, 0.07)",
+              border: "1px solid rgba(238, 77, 45, 0.2)",
+              borderRadius: "var(--radius-lg)",
+              padding: "14px 16px",
+              marginBottom: 20,
+              fontSize: 12.5,
+              color: "var(--foreground)",
+            }}
+          >
+            <div
+              style={{
+                fontWeight: 800,
+                color: "var(--primary)",
+                marginBottom: 6,
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+              }}
+            >
+              <Sparkles size={14} /> Keuntungan Mitra UMKM SecondBit:
+            </div>
+            <ul style={{ margin: 0, paddingLeft: 18, color: "var(--foreground-secondary)", lineHeight: 1.6 }}>
+              <li><strong>Rp 0 Biaya Pendaftaran:</strong> 100% Gratis tanpa biaya langganan bulanan.</li>
+              <li><strong>Balikkan Modal Sisa:</strong> Tambahan omzet ±Rp 1,5–2 Juta/bln dari makanan yang biasanya terbuang.</li>
+              <li><strong>Margin Terlindungi:</strong> Kuota fair maks 2 porsi/user & proteksi bundling menu reguler.</li>
+              <li><strong>Pendampingan Tim Duta:</strong> Tim mahasiswa siap datang bantu foto menu & setup toko langsung di lokasi!</li>
+            </ul>
+          </div>
+        )}
+
         <form onSubmit={handleSubmit}>
           <div style={{ marginBottom: 16 }}>
             <label style={{ fontSize: 13, fontWeight: 500, display: "block", marginBottom: 6 }}>
-              Nama Lengkap
+              {role === "seller" ? "Nama Pemilik / Pengelola" : "Nama Lengkap"}
             </label>
             <div style={{ position: "relative" }}>
               <User
@@ -126,7 +189,7 @@ export default function Register() {
               <input
                 className="input"
                 type="text"
-                placeholder="Masukkan nama lengkap"
+                placeholder={role === "seller" ? "Cth: Ibu Siti Aminah" : "Masukkan nama lengkap"}
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 style={{ paddingLeft: 42 }}
@@ -134,6 +197,66 @@ export default function Register() {
               />
             </div>
           </div>
+
+          {/* Extra input for UMKM Shop Name */}
+          {role === "seller" && (
+            <div style={{ marginBottom: 16 }}>
+              <label style={{ fontSize: 13, fontWeight: 500, display: "block", marginBottom: 6 }}>
+                Nama Warung / Usaha Kuliner
+              </label>
+              <div style={{ position: "relative" }}>
+                <Store
+                  size={18}
+                  style={{
+                    position: "absolute",
+                    left: 14,
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    color: "var(--muted-light)",
+                  }}
+                />
+                <input
+                  className="input"
+                  type="text"
+                  placeholder="Cth: Warung Bu Siti Ketintang"
+                  value={shopName}
+                  onChange={(e) => setShopName(e.target.value)}
+                  style={{ paddingLeft: 42 }}
+                  required
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Extra input for WhatsApp */}
+          {role === "seller" && (
+            <div style={{ marginBottom: 16 }}>
+              <label style={{ fontSize: 13, fontWeight: 500, display: "block", marginBottom: 6 }}>
+                Nomor WhatsApp Aktif (Untuk Notifikasi Pesanan)
+              </label>
+              <div style={{ position: "relative" }}>
+                <Phone
+                  size={18}
+                  style={{
+                    position: "absolute",
+                    left: 14,
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    color: "var(--muted-light)",
+                  }}
+                />
+                <input
+                  className="input"
+                  type="tel"
+                  placeholder="Cth: 081234567890"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  style={{ paddingLeft: 42 }}
+                  required
+                />
+              </div>
+            </div>
+          )}
 
           <div style={{ marginBottom: 16 }}>
             <label style={{ fontSize: 13, fontWeight: 500, display: "block", marginBottom: 6 }}>
