@@ -1,5 +1,6 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { useLocation } from "react-router-dom";
+import { PanelLeftOpen } from "lucide-react";
 import DashboardSidebar from "@/components/layout/DashboardSidebar";
 import DashboardNavbar from "@/components/layout/DashboardNavbar";
 import DashboardBottomNav from "@/components/layout/DashboardBottomNav";
@@ -13,6 +14,20 @@ interface DashboardLayoutProps {
 export default function DashboardLayout({ role, children }: DashboardLayoutProps) {
   const config = dashboardConfig[role];
   const location = useLocation();
+
+  // Reactive breakpoint detection (1024px)
+  const [isDesktop, setIsDesktop] = useState<boolean>(() => {
+    if (typeof window !== "undefined") return window.innerWidth >= 1024;
+    return true;
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth >= 1024);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Desktop sidebar: default open, remembered in localStorage
   const [desktopOpen, setDesktopOpen] = useState<boolean>(() => {
@@ -34,30 +49,16 @@ export default function DashboardLayout({ role, children }: DashboardLayoutProps
 
   // Lock body scroll when mobile drawer is open
   useEffect(() => {
-    if (!mobileOpen) return;
+    if (!mobileOpen || isDesktop) return;
     const previous = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = previous;
     };
-  }, [mobileOpen]);
-
-  // Keyboard shortcut Ctrl+B or Cmd+B to toggle sidebar
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "b") {
-        e.preventDefault();
-        toggleSidebar();
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
-
-  const isDesktop = () => typeof window !== "undefined" && window.innerWidth >= 1024;
+  }, [mobileOpen, isDesktop]);
 
   const toggleSidebar = () => {
-    if (isDesktop()) {
+    if (isDesktop) {
       setDesktopOpen((prev) => {
         const next = !prev;
         localStorage.setItem("secondbit_sidebar_desktop", String(next));
@@ -69,7 +70,7 @@ export default function DashboardLayout({ role, children }: DashboardLayoutProps
   };
 
   const closeSidebar = () => {
-    if (isDesktop()) {
+    if (isDesktop) {
       setDesktopOpen(false);
       localStorage.setItem("secondbit_sidebar_desktop", "false");
     } else {
@@ -77,7 +78,19 @@ export default function DashboardLayout({ role, children }: DashboardLayoutProps
     }
   };
 
-  const isSidebarOpen = isDesktop() ? desktopOpen : mobileOpen;
+  // Keyboard shortcut Ctrl+B or Cmd+B to toggle sidebar
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "b") {
+        e.preventDefault();
+        toggleSidebar();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isDesktop]);
+
+  const isSidebarOpen = isDesktop ? desktopOpen : mobileOpen;
 
   return (
     <div className="dash-shell" data-role={role}>
@@ -95,6 +108,20 @@ export default function DashboardLayout({ role, children }: DashboardLayoutProps
           aria-label="Tutup menu navigasi"
           onClick={() => setMobileOpen(false)}
         />
+      )}
+
+      {/* Floating quick restore handle on desktop when sidebar is hidden */}
+      {isDesktop && !desktopOpen && (
+        <button
+          type="button"
+          onClick={toggleSidebar}
+          className="dash-quick-restore-btn"
+          aria-label="Tampilkan sidebar (Ctrl+B)"
+          title="Tampilkan sidebar (Ctrl+B)"
+        >
+          <PanelLeftOpen size={15} />
+          <span>Buka Menu</span>
+        </button>
       )}
 
       <div className="dash-main">

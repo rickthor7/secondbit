@@ -75,11 +75,21 @@ export default function DashboardSidebar({
       style={{
         backgroundColor: palette.background,
         color: palette.text,
-        borderRight: `1px solid ${palette.border}`,
+        borderRight: desktopOpen ? `1px solid ${palette.border}` : "none",
       }}
       aria-label={`Navigasi ${config.roleLabel}`}
     >
-      {/* Brand */}
+      <div
+        className="dash-sidebar-inner"
+        style={{
+          width: 264,
+          minWidth: 264,
+          height: "100%",
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        {/* Brand */}
       <div
         style={{
           display: "flex",
@@ -303,6 +313,7 @@ export default function DashboardSidebar({
           <LogOut size={15} />
           Keluar
         </button>
+      </div>
       </div>
     </aside>
   );

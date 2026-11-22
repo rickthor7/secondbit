@@ -747,9 +747,7 @@ button {
   height: 100vh;
   overflow: hidden;
   transition: width 0.28s cubic-bezier(0.4, 0, 0.2, 1),
-    margin-left 0.28s cubic-bezier(0.4, 0, 0.2, 1),
-    transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
-    opacity 0.25s ease,
+    opacity 0.22s ease,
     visibility 0.28s;
   z-index: var(--z-sticky);
 }
@@ -763,14 +761,24 @@ button {
 }
 
 .dash-menu-btn {
-  display: inline-flex;
+  display: inline-flex !important;
   align-items: center;
   justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(140, 140, 140, 0.28) !important;
+  background-color: rgba(140, 140, 140, 0.12) !important;
+  color: inherit !important;
+  cursor: pointer !important;
+  flex-shrink: 0;
   transition: all var(--transition-fast);
 }
 
 .dash-menu-btn:hover {
-  background-color: color-mix(in srgb, currentColor 10%, transparent) !important;
+  background-color: rgba(140, 140, 140, 0.24) !important;
+  border-color: rgba(140, 140, 140, 0.5) !important;
+  transform: scale(1.05);
 }
 
 .dash-sidebar-close {
@@ -780,6 +788,36 @@ button {
 
 .dash-sidebar-close:hover {
   background-color: color-mix(in srgb, currentColor 10%, transparent) !important;
+}
+
+.dash-quick-restore-btn {
+  position: fixed;
+  left: 0;
+  top: 48%;
+  transform: translateY(-50%);
+  z-index: calc(var(--z-sticky) + 1);
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px 8px 8px;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  background: var(--surface);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  border-left: none;
+  box-shadow: var(--shadow-md);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.dash-quick-restore-btn:hover {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-50%) translateX(2px);
 }
 
 .dash-navbar {
@@ -892,19 +930,23 @@ button {
 
 @media (min-width: 1024px) {
   .dash-sidebar[data-desktop-open="true"] {
-    width: 264px;
-    margin-left: 0;
-    opacity: 1;
-    visibility: visible;
-    pointer-events: auto;
+    width: 264px !important;
+    min-width: 264px !important;
+    margin-left: 0 !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
   }
 
   .dash-sidebar[data-desktop-open="false"] {
-    width: 0;
-    margin-left: -264px;
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
+    width: 0 !important;
+    min-width: 0 !important;
+    margin-left: 0 !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+    border-right-width: 0 !important;
+    border-right-color: transparent !important;
   }
 
   .dash-bottom-nav {
@@ -914,11 +956,12 @@ button {
 
 @media (max-width: 1023px) {
   .dash-sidebar {
-    position: fixed;
+    position: fixed !important;
     top: 0;
     left: 0;
     bottom: 0;
-    width: 280px;
+    width: 280px !important;
+    min-width: 280px !important;
     height: 100vh;
     z-index: var(--z-modal);
     transform: translateX(-100%);
@@ -927,8 +970,8 @@ button {
   }
 
   .dash-sidebar[data-mobile-open="true"] {
-    transform: translateX(0);
-    visibility: visible;
+    transform: translateX(0) !important;
+    visibility: visible !important;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
   }
 

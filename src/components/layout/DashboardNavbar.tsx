@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Bell, Moon, Sun, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 import Swal from "sweetalert2";
 import { useTheme } from "@/hooks/useTheme";
+import logoImg from "@/assets/images/logo.jpg";
 import type { DashboardRoleConfig } from "@/config/dashboardConfig";
 
 interface DashboardNavbarProps {
@@ -63,48 +64,71 @@ export default function DashboardNavbar({
           className="dash-menu-btn"
           aria-label={isSidebarOpen ? "Sembunyikan sidebar (Ctrl+B)" : "Tampilkan sidebar (Ctrl+B)"}
           title={isSidebarOpen ? "Sembunyikan sidebar (Ctrl+B)" : "Tampilkan sidebar (Ctrl+B)"}
-          style={{
-            width: 36,
-            height: 36,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            borderRadius: "var(--radius-md)",
-            border: `1px solid ${palette.border}`,
-            backgroundColor: "transparent",
-            color: palette.text,
-            flexShrink: 0,
-            cursor: "pointer",
-            transition: "all var(--transition-fast)",
-          }}
         >
           {isSidebarOpen ? <PanelLeftClose size={18} /> : <PanelLeftOpen size={18} />}
         </button>
 
-        <div style={{ minWidth: 0 }}>
-          <div
-            style={{
-              fontSize: 9.5,
-              fontWeight: 700,
-              letterSpacing: "0.9px",
-              textTransform: "uppercase",
-              color: palette.muted,
-              lineHeight: 1.2,
-            }}
-          >
-            {config.kicker}
-          </div>
-          <div
-            style={{
-              fontSize: 15,
-              fontWeight: 700,
-              letterSpacing: "-0.2px",
-              whiteSpace: "nowrap",
-              overflow: "hidden",
-              textOverflow: "ellipsis",
-            }}
-          >
-            {config.title}
+        <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
+          {!isSidebarOpen && (
+            <Link
+              to="/"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 8,
+                textDecoration: "none",
+                flexShrink: 0,
+              }}
+              title="Ke Beranda SecondBit"
+            >
+              <img
+                src={logoImg}
+                alt="SecondBit"
+                style={{ height: 26, width: "auto", borderRadius: 6 }}
+              />
+              <span
+                style={{
+                  fontSize: 8.5,
+                  fontWeight: 700,
+                  letterSpacing: "0.35px",
+                  textTransform: "uppercase",
+                  padding: "3px 6px",
+                  borderRadius: "var(--radius-full)",
+                  backgroundColor: config.sidebar.activeBackground,
+                  color: config.sidebar.activeText,
+                  whiteSpace: "nowrap",
+                }}
+              >
+                {config.roleLabel}
+              </span>
+            </Link>
+          )}
+
+          <div style={{ minWidth: 0 }}>
+            <div
+              style={{
+                fontSize: 9.5,
+                fontWeight: 700,
+                letterSpacing: "0.9px",
+                textTransform: "uppercase",
+                color: palette.muted,
+                lineHeight: 1.2,
+              }}
+            >
+              {config.kicker}
+            </div>
+            <div
+              style={{
+                fontSize: 15,
+                fontWeight: 700,
+                letterSpacing: "-0.2px",
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {config.title}
+            </div>
           </div>
         </div>
 
